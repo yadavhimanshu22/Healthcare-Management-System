@@ -1,0 +1,54 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Reports";
+}
+
+<div class="space-y-6">
+
+  <!-- HEADER WITH LEFT GO BACK -->
+  <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <a href="/Admin/Dashboard" class="inline-flex items-center gap-2 px-4 py-2 bg-[#1877f2] hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Go Back</span>
+      </a>
+      <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+        <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Clinical &amp; System Analytics</h1>
+        <p class="text-xs text-slate-400 mt-0.5">Export operational audit logs, daily OPD stats and revenue summaries.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#1877f2] flex items-center justify-center mb-4">
+        <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
+      </div>
+      <h3 class="text-sm font-bold text-slate-800">OPD Patient Census</h3>
+      <p class="text-xs text-slate-400 mt-1 mb-4">Daily count across all 12 specialized departments.</p>
+      <button class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition">Export CSV</button>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+      </div>
+      <h3 class="text-sm font-bold text-slate-800">Department Occupancy</h3>
+      <p class="text-xs text-slate-400 mt-1 mb-4">ICU and in-patient occupancy distribution.</p>
+      <button class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition">Generate PDF</button>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+        <i data-lucide="banknote" class="w-5 h-5"></i>
+      </div>
+      <h3 class="text-sm font-bold text-slate-800">Financial Revenue Ledger</h3>
+      <p class="text-xs text-slate-400 mt-1 mb-4">Monthly collection, refunds and insurance desk logs.</p>
+      <button class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition">Download Statement</button>
+    </div>
+  </div>
+
+</div>

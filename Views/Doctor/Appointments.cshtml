@@ -1,0 +1,3 @@
+@model IEnumerable<Appointment>
+@{ ViewData["Title"]="Doctor Appointments"; }
+<div class="container py-5"><h2>Appointments</h2><table class="table table-hover"><thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody>@foreach(var a in Model){<tr><td>@a.Patient?.FullName</td><td>@a.AppointmentDate.ToString("dd-MM-yyyy")</td><td>@a.AppointmentTime</td><td>@a.Status</td><td><form asp-controller="Appointment" asp-action="Status" method="post" class="d-inline"><input type="hidden" name="id" value="@a.AppointmentId"/><input type="hidden" name="status" value="Completed"/><button class="btn btn-sm btn-success">Complete</button></form></td></tr>}</tbody></table></div>

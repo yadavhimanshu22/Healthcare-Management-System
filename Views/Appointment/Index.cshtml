@@ -1,0 +1,287 @@
+@{
+    ViewData["Title"] = "Doctor Appointment";
+}
+
+<div class="appointment-page">
+
+    <div class="appointment-hero">
+
+        <div>
+
+            <span class="section-badge">
+                Healthcare Appointment
+            </span>
+
+            <h1>
+                Find a Doctor & Book an Appointment
+            </h1>
+
+            <p>
+                Choose your doctor, preferred date
+                and convenient time slot.
+            </p>
+
+        </div>
+
+        <div class="appointment-hero-icon">
+            📅
+        </div>
+
+    </div>
+
+
+    <div class="appointment-info-grid">
+
+        <div class="appointment-info-card">
+
+            <span>01</span>
+
+            <h3>
+                Choose Doctor
+            </h3>
+
+            <p>
+                Select a doctor according to
+                your healthcare needs.
+            </p>
+
+        </div>
+
+
+        <div class="appointment-info-card">
+
+            <span>02</span>
+
+            <h3>
+                Select Date & Time
+            </h3>
+
+            <p>
+                Choose a convenient appointment
+                date and available time.
+            </p>
+
+        </div>
+
+
+        <div class="appointment-info-card">
+
+            <span>03</span>
+
+            <h3>
+                Confirm Appointment
+            </h3>
+
+            <p>
+                Review your information and
+                confirm your booking.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="doctors-section">
+
+        <div class="section-title-left">
+
+            <span class="section-badge">
+                Available Doctors
+            </span>
+
+            <h2>
+                Choose Your Doctor
+            </h2>
+
+            <p>
+                Select from our available
+                healthcare professionals.
+            </p>
+
+        </div>
+
+
+        <div class="doctor-grid">
+
+
+            <div class="doctor-card">
+
+                <div class="doctor-avatar">
+                    DR
+                </div>
+
+                <div class="doctor-details">
+
+                    <h3>
+                        Dr. Rajesh Patel
+                    </h3>
+
+                    <span class="specialization">
+                        Cardiologist
+                    </span>
+
+                    <p>
+                        10+ years experience
+                    </p>
+
+                    <div class="doctor-meta">
+
+                        <span>
+                            ⭐ 4.9
+                        </span>
+
+                        <span>
+                            ₹500
+                        </span>
+
+                    </div>
+
+                    <a asp-action="Create"
+                       asp-route-doctorName="Dr. Rajesh Patel"
+                       asp-route-specialization="Cardiologist"
+                       class="book-button">
+                        Book Appointment
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="doctor-card">
+
+                <div class="doctor-avatar">
+                    DR
+                </div>
+
+                <div class="doctor-details">
+
+                    <h3>
+                        Dr. Priya Shah
+                    </h3>
+
+                    <span class="specialization">
+                        General Physician
+                    </span>
+
+                    <p>
+                        8+ years experience
+                    </p>
+
+                    <div class="doctor-meta">
+
+                        <span>
+                            ⭐ 4.8
+                        </span>
+
+                        <span>
+                            ₹400
+                        </span>
+
+                    </div>
+
+                    <a asp-action="Create"
+                       asp-route-doctorName="Dr. Priya Shah"
+                       asp-route-specialization="General Physician"
+                       class="book-button">
+                        Book Appointment
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="doctor-card">
+
+                <div class="doctor-avatar">
+                    DR
+                </div>
+
+                <div class="doctor-details">
+
+                    <h3>
+                        Dr. Amit Mehta
+                    </h3>
+
+                    <span class="specialization">
+                        Orthopedic
+                    </span>
+
+                    <p>
+                        12+ years experience
+                    </p>
+
+                    <div class="doctor-meta">
+
+                        <span>
+                            ⭐ 4.9
+                        </span>
+
+                        <span>
+                            ₹600
+                        </span>
+
+                    </div>
+
+                    <a asp-action="Create"
+                       asp-route-doctorName="Dr. Amit Mehta"
+                       asp-route-specialization="Orthopedic"
+                       class="book-button">
+                        Book Appointment
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="doctor-card">
+
+                <div class="doctor-avatar">
+                    DR
+                </div>
+
+                <div class="doctor-details">
+
+                    <h3>
+                        Dr. Neha Desai
+                    </h3>
+
+                    <span class="specialization">
+                        Dermatologist
+                    </span>
+
+                    <p>
+                        7+ years experience
+                    </p>
+
+                    <div class="doctor-meta">
+
+                        <span>
+                            ⭐ 4.8
+                        </span>
+
+                        <span>
+                            ₹450
+                        </span>
+
+                    </div>
+
+                    <a asp-action="Create"
+                       asp-route-doctorName="Dr. Neha Desai"
+                       asp-route-specialization="Dermatologist"
+                       class="book-button">
+                        Book Appointment
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

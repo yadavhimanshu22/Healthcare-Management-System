@@ -1,0 +1,1266 @@
+@model HealthcareManagementSystem.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<style>
+    /* =========================================================
+       DASHBOARD BACKGROUND
+       ========================================================= */
+
+    .dashboard-page {
+        position: relative;
+        min-height: 100vh;
+        padding: 24px;
+        overflow: hidden;
+
+        background:
+            radial-gradient(circle at 90% 5%, rgba(37, 99, 235, 0.12), transparent 28%),
+            radial-gradient(circle at 5% 30%, rgba(14, 165, 233, 0.10), transparent 25%),
+            linear-gradient(135deg, #f8fbff 0%, #eef7ff 50%, #f7fbff 100%);
+    }
+
+    .dashboard-page::before {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: rgba(37, 99, 235, 0.05);
+        top: -120px;
+        right: -80px;
+        pointer-events: none;
+    }
+
+    .dashboard-page::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(14, 165, 233, 0.05);
+        bottom: -100px;
+        left: -80px;
+        pointer-events: none;
+    }
+
+    .dashboard-container {
+        position: relative;
+        z-index: 2;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       PAGE HEADER
+       ========================================================= */
+
+    .dashboard-welcome {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+
+        margin-bottom: 24px;
+        padding: 28px 30px;
+
+        background: linear-gradient(
+            135deg,
+            #0f4c81,
+            #1677b8
+        );
+
+        border-radius: 22px;
+        color: white;
+
+        box-shadow:
+            0 15px 35px rgba(15, 76, 129, 0.18);
+
+        overflow: hidden;
+        position: relative;
+    }
+
+    .dashboard-welcome::after {
+        content: "✚";
+        position: absolute;
+        right: 35px;
+        bottom: -30px;
+
+        font-size: 150px;
+        font-weight: 700;
+
+        color: rgba(255,255,255,0.06);
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-content h1 {
+        margin: 0 0 7px;
+        font-size: 30px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+    }
+
+    .welcome-content p {
+        margin: 0;
+        font-size: 15px;
+        color: rgba(255,255,255,0.82);
+    }
+
+    .welcome-date {
+        position: relative;
+        z-index: 2;
+
+        padding: 12px 18px;
+        border-radius: 14px;
+
+        background: rgba(255,255,255,0.13);
+        border: 1px solid rgba(255,255,255,0.18);
+
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       STATISTICS
+       ========================================================= */
+
+    .statistics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card {
+        background: rgba(255,255,255,0.92);
+        border: 1px solid #e2edf7;
+
+        border-radius: 18px;
+        padding: 22px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        box-shadow: 0 8px 25px rgba(30, 64, 175, 0.07);
+
+        transition: all 0.25s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 32px rgba(30, 64, 175, 0.12);
+    }
+
+    .stat-title {
+        display: block;
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .stat-number {
+        display: block;
+        color: #0f172a;
+        font-size: 30px;
+        font-weight: 750;
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 16px;
+
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .patients-icon {
+        background: #e8f2ff;
+        color: #2563eb;
+    }
+
+    .doctors-icon {
+        background: #e8f8f1;
+        color: #059669;
+    }
+
+    .users-icon {
+        background: #f2ecff;
+        color: #7c3aed;
+    }
+
+    .revenue-icon {
+        background: #fff5df;
+        color: #d97706;
+    }
+
+
+    /* =========================================================
+       SMALL STATISTICS
+       ========================================================= */
+
+    .secondary-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+
+        margin-bottom: 22px;
+    }
+
+    .small-stat-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        padding: 18px 20px;
+
+        background: rgba(255,255,255,0.88);
+        border: 1px solid #e2edf7;
+        border-radius: 16px;
+
+        box-shadow: 0 6px 20px rgba(30,64,175,0.05);
+    }
+
+    .small-stat-icon {
+        width: 44px;
+        height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+        font-size: 19px;
+    }
+
+    .small-stat-card span {
+        display: block;
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .small-stat-card strong {
+        color: #0f172a;
+        font-size: 21px;
+    }
+
+    .pending {
+        background: #fff7df;
+        color: #d97706;
+    }
+
+    .completed {
+        background: #e7f8ef;
+        color: #059669;
+    }
+
+    .reports {
+        background: #eaf3ff;
+        color: #2563eb;
+    }
+
+    .users {
+        background: #f3edff;
+        color: #7c3aed;
+    }
+
+
+    /* =========================================================
+       DASHBOARD GRID
+       ========================================================= */
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 20px;
+
+        margin-bottom: 22px;
+    }
+
+    .dashboard-card {
+        background: rgba(255,255,255,0.94);
+
+        border: 1px solid #e2edf7;
+        border-radius: 20px;
+
+        padding: 24px;
+
+        box-shadow: 0 8px 28px rgba(30,64,175,0.06);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 20px;
+    }
+
+    .card-header h2 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .card-header p {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+
+    /* =========================================================
+       APPOINTMENT STATUS
+       ========================================================= */
+
+    .appointment-status-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 15px;
+
+        background: #f8fbff;
+        border-radius: 13px;
+
+        border: 1px solid #edf3f8;
+    }
+
+    .status-left {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
+    .dot-pending {
+        background: #f59e0b;
+    }
+
+    .dot-completed {
+        background: #10b981;
+    }
+
+    .dot-cancelled {
+        background: #ef4444;
+    }
+
+    .dot-active {
+        background: #3b82f6;
+    }
+
+    .status-row strong {
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .status-count {
+        font-size: 18px;
+        font-weight: 750;
+        color: #0f172a;
+    }
+
+
+    /* =========================================================
+       QUICK ACTIONS
+       ========================================================= */
+
+    .quick-actions-card {
+        margin-bottom: 22px;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .quick-action {
+        text-decoration: none;
+        color: #334155;
+
+        padding: 20px 16px;
+
+        background: #f8fbff;
+        border: 1px solid #e5eef7;
+
+        border-radius: 15px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        gap: 10px;
+
+        text-align: center;
+
+        transition: all 0.25s ease;
+    }
+
+    .quick-action:hover {
+        background: #edf6ff;
+        border-color: #bfdbfe;
+        transform: translateY(-3px);
+        color: #0f4c81;
+    }
+
+    .quick-action-icon {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #e7f2ff;
+        color: #2563eb;
+
+        border-radius: 14px;
+
+        font-size: 22px;
+    }
+
+    .quick-action span {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+       RECENT TABLE
+       ========================================================= */
+
+    .recent-card {
+        margin-bottom: 22px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .dashboard-table th {
+        text-align: left;
+        padding: 13px 12px;
+
+        color: #64748b;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+
+        background: #f8fbff;
+        border-bottom: 1px solid #e5edf5;
+    }
+
+    .dashboard-table td {
+        padding: 15px 12px;
+
+        color: #334155;
+        font-size: 14px;
+
+        border-bottom: 1px solid #eef3f7;
+    }
+
+    .dashboard-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .patient-name {
+        font-weight: 650;
+        color: #0f172a;
+    }
+
+    .doctor-name {
+        color: #64748b;
+    }
+
+
+    /* =========================================================
+       STATUS BADGES
+       ========================================================= */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 6px 11px;
+
+        border-radius: 20px;
+
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .badge-pending {
+        background: #fff6dc;
+        color: #b45309;
+    }
+
+    .badge-completed {
+        background: #e6f8ef;
+        color: #047857;
+    }
+
+    .badge-cancelled {
+        background: #feecec;
+        color: #b91c1c;
+    }
+
+    .badge-active {
+        background: #e8f2ff;
+        color: #1d4ed8;
+    }
+
+
+    /* =========================================================
+       CLINICAL SUMMARY
+       ========================================================= */
+
+    .clinical-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .clinical-card {
+        padding: 20px;
+
+        background: linear-gradient(
+            135deg,
+            #f8fbff,
+            #eef7ff
+        );
+
+        border: 1px solid #dceaf7;
+        border-radius: 16px;
+    }
+
+    .clinical-card-icon {
+        width: 44px;
+        height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: white;
+        border-radius: 12px;
+
+        margin-bottom: 13px;
+
+        font-size: 20px;
+    }
+
+    .clinical-card h3 {
+        margin: 0 0 5px;
+
+        font-size: 15px;
+        color: #334155;
+    }
+
+    .clinical-card strong {
+        font-size: 26px;
+        color: #0f4c81;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @@media (max-width: 1200px) {
+
+        .statistics-grid,
+        .secondary-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .quick-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .clinical-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 900px) {
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-welcome {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+    @@media (max-width: 600px) {
+
+        .dashboard-page {
+            padding: 14px;
+        }
+
+        .statistics-grid,
+        .secondary-stats,
+        .quick-actions,
+        .clinical-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-welcome {
+            padding: 22px;
+        }
+
+        .welcome-content h1 {
+            font-size: 24px;
+        }
+
+        .welcome-date {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="dashboard-page">
+
+    <div class="dashboard-container">
+
+        <!-- =====================================================
+             WELCOME HEADER
+             ===================================================== -->
+
+        <section class="dashboard-welcome">
+
+            <div class="welcome-content">
+
+                <h1>
+                    Admin Dashboard
+                </h1>
+
+                <p>
+                    Monitor and manage your healthcare system from one place.
+                </p>
+
+            </div>
+
+            <div class="welcome-date">
+                📅 @DateTime.Now.ToString("dd MMM yyyy")
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             MAIN STATISTICS
+             ===================================================== -->
+
+        <section class="statistics-grid">
+
+            <div class="stat-card">
+
+                <div>
+                    <span class="stat-title">
+                        Total Patients
+                    </span>
+
+                    <strong class="stat-number">
+                        @Model.TotalPatients
+                    </strong>
+                </div>
+
+                <div class="stat-icon patients-icon">
+                    👥
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div>
+                    <span class="stat-title">
+                        Total Doctors
+                    </span>
+
+                    <strong class="stat-number">
+                        @Model.TotalDoctors
+                    </strong>
+                </div>
+
+                <div class="stat-icon doctors-icon">
+                    ⚕
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div>
+                    <span class="stat-title">
+                        Total Users
+                    </span>
+
+                    <strong class="stat-number">
+                        @Model.TotalUsers
+                    </strong>
+                </div>
+
+                <div class="stat-icon users-icon">
+                    👤
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div>
+                    <span class="stat-title">
+                        Total Revenue
+                    </span>
+
+                    <strong class="stat-number">
+                        ₹@Model.TotalRevenue.ToString("N0")
+                    </strong>
+                </div>
+
+                <div class="stat-icon revenue-icon">
+                    ₹
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             APPOINTMENT STATISTICS
+             ===================================================== -->
+
+        <section class="secondary-stats">
+
+            <div class="small-stat-card">
+
+                <div class="small-stat-icon pending">
+                    ⏳
+                </div>
+
+                <div>
+                    <span>Pending Appointments</span>
+                    <strong>@Model.PendingAppointments</strong>
+                </div>
+
+            </div>
+
+
+            <div class="small-stat-card">
+
+                <div class="small-stat-icon completed">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Completed Appointments</span>
+                    <strong>@Model.CompletedAppointments</strong>
+                </div>
+
+            </div>
+
+
+            <div class="small-stat-card">
+
+                <div class="small-stat-icon reports">
+                    📄
+                </div>
+
+                <div>
+                    <span>Pending Reports</span>
+                    <strong>@Model.PendingReports</strong>
+                </div>
+
+            </div>
+
+
+            <div class="small-stat-card">
+
+                <div class="small-stat-icon users">
+                    📅
+                </div>
+
+                <div>
+                    <span>Today's Appointments</span>
+                    <strong>@Model.TodaysAppointments</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             APPOINTMENT + STATUS
+             ===================================================== -->
+
+        <section class="dashboard-grid">
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h2>Recent Appointments</h2>
+
+                        <p>
+                            Latest appointment activity
+                        </p>
+                    </div>
+
+                    <a asp-controller="Admin"
+                       asp-action="Appointments"
+                       style="text-decoration:none;color:#2563eb;font-size:13px;font-weight:600;">
+                        View All →
+                    </a>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @if (Model.RecentAppointments != null &&
+                                 Model.RecentAppointments.Any())
+                            {
+                                foreach (var appointment in Model.RecentAppointments)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            <span class="patient-name">
+                                                @(appointment.Patient?.FullName ?? "Unknown")
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="doctor-name">
+                                                @(appointment.Doctor?.FullName ?? "Unknown")
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @appointment.AppointmentDate.ToString("dd-MM-yyyy")
+                                        </td>
+
+                                        <td>
+
+                                            @{
+                                                var status =
+                                                    appointment.Status?.ToLower() ?? "pending";
+
+                                                var badgeClass =
+                                                    status == "completed"
+                                                        ? "badge-completed"
+                                                        : status == "cancelled"
+                                                            ? "badge-cancelled"
+                                                            : status == "pending"
+                                                                ? "badge-pending"
+                                                                : "badge-active";
+                                            }
+
+                                            <span class="status-badge @badgeClass">
+                                                @(appointment.Status ?? "Pending")
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td colspan="4"
+                                        style="text-align:center;padding:35px;color:#94a3b8;">
+
+                                        No appointments available yet.
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATUS CARD -->
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>Appointment Status</h2>
+
+                        <p>
+                            Current appointment summary
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="appointment-status-list">
+
+                    <div class="status-row">
+
+                        <div class="status-left">
+
+                            <span class="status-dot dot-pending"></span>
+
+                            <strong>Pending</strong>
+
+                        </div>
+
+                        <span class="status-count">
+                            @Model.PendingAppointments
+                        </span>
+
+                    </div>
+
+
+                    <div class="status-row">
+
+                        <div class="status-left">
+
+                            <span class="status-dot dot-completed"></span>
+
+                            <strong>Completed</strong>
+
+                        </div>
+
+                        <span class="status-count">
+                            @Model.CompletedAppointments
+                        </span>
+
+                    </div>
+
+
+                    <div class="status-row">
+
+                        <div class="status-left">
+
+                            <span class="status-dot dot-cancelled"></span>
+
+                            <strong>Cancelled</strong>
+
+                        </div>
+
+                        <span class="status-count">
+                            @Model.CancelledAppointments
+                        </span>
+
+                    </div>
+
+
+                    <div class="status-row">
+
+                        <div class="status-left">
+
+                            <span class="status-dot dot-active"></span>
+
+                            <strong>Active</strong>
+
+                        </div>
+
+                        <span class="status-count">
+                            @Model.ActiveAppointments
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             QUICK ACTIONS
+             ===================================================== -->
+
+        <section class="dashboard-card quick-actions-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>Quick Actions</h2>
+
+                    <p>
+                        Frequently used administration options
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+                <a asp-controller="Admin"
+                   asp-action="Patients"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        👥
+                    </div>
+
+                    <span>
+                        Manage Patients
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Doctors"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        ⚕
+                    </div>
+
+                    <span>
+                        Manage Doctors
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Appointments"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        📅
+                    </div>
+
+                    <span>
+                        Manage Appointments
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Billing"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        ₹
+                    </div>
+
+                    <span>
+                        Manage Billing
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Records"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        📋
+                    </div>
+
+                    <span>
+                        Medical Records
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Reports"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        📊
+                    </div>
+
+                    <span>
+                        View Reports
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Users"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        👤
+                    </div>
+
+                    <span>
+                        Manage Users
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Settings"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        ⚙
+                    </div>
+
+                    <span>
+                        System Settings
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             CLINICAL SUMMARY
+             ===================================================== -->
+
+        <section class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>Clinical Management</h2>
+
+                    <p>
+                        Healthcare records and clinical data
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="clinical-grid">
+
+                <div class="clinical-card">
+
+                    <div class="clinical-card-icon">
+                        📋
+                    </div>
+
+                    <h3>Medical Records</h3>
+
+                    <strong>
+                        @Model.TotalMedicalRecords
+                    </strong>
+
+                </div>
+
+
+                <div class="clinical-card">
+
+                    <div class="clinical-card-icon">
+                        💊
+                    </div>
+
+                    <h3>Prescriptions</h3>
+
+                    <strong>
+                        @Model.TotalPrescriptions
+                    </strong>
+
+                </div>
+
+
+                <div class="clinical-card">
+
+                    <div class="clinical-card-icon">
+                        🧪
+                    </div>
+
+                    <h3>Laboratory Reports</h3>
+
+                    <strong>
+                        @Model.TotalLabReports
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>

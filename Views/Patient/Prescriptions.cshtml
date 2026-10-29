@@ -1,0 +1,3 @@
+@model IEnumerable<Prescription>
+@{ ViewData["Title"]="Prescriptions"; }
+<div class="container py-5"><h2>Prescriptions</h2>@foreach(var p in Model){<div class="card shadow-sm mb-3"><div class="card-body"><h5>Diagnosis: @p.Diagnosis</h5><p>Doctor: @p.Doctor?.FullName</p><ul>@foreach(var i in p.Items){<li>@i.MedicineName — @i.Dosage — @i.Frequency — @i.Duration</li>}</ul><p>@p.Instructions</p></div></div>}</div>

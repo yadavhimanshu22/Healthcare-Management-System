@@ -1,0 +1,469 @@
+```cshtml
+@model HealthcareManagementSystem.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <title>Login - Healthcare Management System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            background: #020817;
+            color: #f8fafc;
+        }
+
+        /* Email and password: normal state */
+        #loginEmail,
+        #loginPassword {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            background: #0f172a !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            -webkit-text-fill-color: #f8fafc !important;
+            caret-color: #ffffff !important;
+            border: 1px solid #334155 !important;
+            border-radius: 12px;
+            opacity: 1 !important;
+            font-size: 14px;
+        }
+
+        #loginEmail::placeholder,
+        #loginPassword::placeholder {
+            color: #94a3b8 !important;
+            -webkit-text-fill-color: #94a3b8 !important;
+            opacity: 1 !important;
+        }
+
+        /* Focus state */
+        #loginEmail:focus,
+        #loginPassword:focus {
+            background: #0f172a !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            -webkit-text-fill-color: #f8fafc !important;
+            border-color: #3b82f6 !important;
+            outline: none !important;
+            box-shadow: 0 0 0 2px rgb(59 130 246 / 25%) !important;
+        }
+
+        /* Chrome / Edge autofill background fix */
+        #loginEmail:-webkit-autofill,
+        #loginEmail:-webkit-autofill:hover,
+        #loginEmail:-webkit-autofill:focus,
+        #loginEmail:-webkit-autofill:active,
+        #loginPassword:-webkit-autofill,
+        #loginPassword:-webkit-autofill:hover,
+        #loginPassword:-webkit-autofill:focus,
+        #loginPassword:-webkit-autofill:active {
+            -webkit-text-fill-color: #f8fafc !important;
+            caret-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
+            box-shadow: 0 0 0 1000px #0f172a inset !important;
+            background-color: #0f172a !important;
+            border: 1px solid #334155 !important;
+            transition: background-color 99999s ease-out 0s;
+        }
+
+        #loginEmail:autofill,
+        #loginPassword:autofill {
+            background: #0f172a !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+
+        /* Role dropdown */
+        #loginRole {
+            background: #0f172a !important;
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            color-scheme: dark;
+            border: 1px solid #334155;
+        }
+
+        #loginRole option {
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+        /* Prevent accidental horizontal overflow */
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-950">
+
+<div class="min-h-screen flex items-center justify-center px-4 py-10">
+    <main class="w-full max-w-md">
+
+        <!-- Page header -->
+        <header class="text-center mb-7">
+            <div class="inline-flex items-center justify-center
+                        w-16 h-16 rounded-2xl bg-blue-600 text-white
+                        shadow-lg shadow-blue-500/30 mb-4">
+                <i data-lucide="heart-pulse" class="w-8 h-8"></i>
+            </div>
+
+            <h1 class="text-2xl font-extrabold text-white">
+                Healthcare Management System
+            </h1>
+
+            <p class="text-sm text-slate-400 mt-2">
+                Sign in to access your healthcare portal
+            </p>
+        </header>
+
+        <!-- Login card -->
+        <section class="bg-slate-900 rounded-3xl shadow-xl
+                        border border-slate-700 overflow-hidden">
+
+            <div class="bg-gradient-to-r from-rose-950 to-rose-800
+                        px-6 py-6 text-white">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-white/10
+                                flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold">
+                            Welcome Back
+                        </h2>
+                        <p class="text-xs text-rose-100 mt-1">
+                            Login to your account
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-7">
+
+                @foreach (var key in new[]
+                {
+                    "LoginSuccess",
+                    "RegistrationSuccess",
+                    "RegisterSuccess"
+                })
+                {
+                    if (TempData[key] != null)
+                    {
+                        <div class="mb-4 rounded-xl border border-green-800
+                                    bg-green-950 px-4 py-3">
+                            <p class="text-sm text-green-300">
+                                @TempData[key]
+                            </p>
+                        </div>
+                    }
+                }
+
+                @if (TempData["LoginError"] != null)
+                {
+                    <div class="mb-4 rounded-xl border border-red-800
+                                bg-red-950 px-4 py-3">
+                        <p class="text-sm text-red-300">
+                            @TempData["LoginError"]
+                        </p>
+                    </div>
+                }
+
+                <form id="loginForm"
+                      asp-controller="Account"
+                      asp-action="Login"
+                      method="post"
+                      autocomplete="off"
+                      class="space-y-5">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="returnUrl"
+                           value="@ViewData["ReturnUrl"]" />
+
+                    <input type="hidden"
+                           name="fromHome"
+                           value="false" />
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-sm text-red-400"></div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="loginEmail"
+                               class="block text-sm font-bold
+                                      text-slate-200 mb-2">
+                            Email Address
+                        </label>
+
+                        <div class="relative">
+                            <i data-lucide="mail"
+                               class="absolute left-3.5 top-1/2
+                                      -translate-y-1/2 w-4 h-4
+                                      text-slate-400 pointer-events-none"></i>
+
+                            <!-- Explicit name keeps ASP.NET model binding working.
+                                 No asp-for value is rendered into this input. -->
+                            <input name="Email"
+                                   id="loginEmail"
+                                   type="email"
+                                   value=""
+                                   autocomplete="off"
+                                   autocapitalize="none"
+                                   spellcheck="false"
+                                   placeholder="Enter your email"
+                                   class="pl-10 pr-4 py-3" />
+                        </div>
+
+                        <span asp-validation-for="Email"
+                              class="text-xs text-red-400"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="loginPassword"
+                                   class="text-sm font-bold text-slate-200">
+                                Password
+                            </label>
+
+                            <a asp-controller="Account"
+                               asp-action="ForgotPassword"
+                               class="text-xs font-semibold text-blue-400
+                                      hover:text-blue-300">
+                                Forgot Password?
+                            </a>
+                        </div>
+
+                        <div class="relative">
+                            <i data-lucide="lock"
+                               class="absolute left-3.5 top-1/2
+                                      -translate-y-1/2 w-4 h-4
+                                      text-slate-400 pointer-events-none"></i>
+
+                            <input name="Password"
+                                   id="loginPassword"
+                                   type="password"
+                                   value=""
+                                   autocomplete="new-password"
+                                   placeholder="Enter your password"
+                                   class="pl-10 pr-12 py-3" />
+
+                            <button type="button"
+                                    id="togglePasswordButton"
+                                    aria-label="Show password"
+                                    class="absolute right-3.5 top-1/2
+                                           -translate-y-1/2 text-slate-400
+                                           hover:text-blue-400">
+                                <i id="passwordIcon"
+                                   data-lucide="eye"
+                                   class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        <span asp-validation-for="Password"
+                              class="text-xs text-red-400"></span>
+                    </div>
+
+                    <!-- Role -->
+                    <div>
+                        <label asp-for="Role"
+                               class="block text-sm font-bold
+                                      text-slate-200 mb-2">
+                            Login As
+                        </label>
+
+                        <div class="relative">
+                            <i data-lucide="user-round-check"
+                               class="absolute left-3.5 top-1/2
+                                      -translate-y-1/2 w-4 h-4
+                                      text-slate-400 pointer-events-none"></i>
+
+                            <select asp-for="Role"
+                                    id="loginRole"
+                                    autocomplete="off"
+                                    class="w-full pl-10 pr-10 py-3
+                                           rounded-xl text-sm">
+                                <option value="">Select your role</option>
+                                <option value="Administrator">Administrator</option>
+                                <option value="Doctor">Doctor</option>
+                                <option value="Patient">Patient</option>
+                                <option value="Receptionist">Receptionist</option>
+                                <option value="Laboratory">Laboratory</option>
+                            </select>
+                        </div>
+
+                        <span asp-validation-for="Role"
+                              class="text-xs text-red-400"></span>
+                    </div>
+
+                    <!-- Information -->
+                    <div class="flex gap-3 bg-blue-950 border
+                                border-blue-900 rounded-xl px-4 py-3">
+                        <i data-lucide="info"
+                           class="w-4 h-4 text-blue-400 mt-0.5 shrink-0"></i>
+
+                        <p class="text-xs leading-relaxed text-blue-200">
+                            Select the same role assigned to your account
+                            during registration.
+                        </p>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit"
+                            class="w-full py-3.5 rounded-xl
+                                   bg-rose-700 hover:bg-rose-800
+                                   text-white font-bold text-sm
+                                   shadow-lg transition
+                                   flex items-center justify-center gap-2">
+                        <i data-lucide="log-in" class="w-4 h-4"></i>
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Register divider -->
+                <div class="relative my-7">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-slate-700"></div>
+                    </div>
+
+                    <div class="relative flex justify-center">
+                        <span class="bg-slate-900 px-3 text-xs text-slate-400">
+                            Don't have an account?
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Register -->
+                <a asp-controller="Account"
+                   asp-action="Register"
+                   class="w-full py-3 rounded-xl border border-slate-600
+                          text-slate-200 hover:border-rose-500
+                          hover:bg-slate-800 hover:text-rose-300
+                          font-semibold text-sm transition
+                          flex items-center justify-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    Create New Account
+                </a>
+
+                <div class="flex items-center justify-center gap-2 mt-6">
+                    <i data-lucide="shield-check"
+                       class="w-3.5 h-3.5 text-green-400"></i>
+
+                    <span class="text-[10px] text-slate-500">
+                        Secure authentication powered by ASP.NET Core Identity
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Back home -->
+        <div class="text-center mt-5">
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="text-sm font-semibold text-slate-400
+                      hover:text-blue-400">
+                ← Back to Home
+            </a>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+        const password = document.getElementById("loginPassword");
+        const button = document.getElementById("togglePasswordButton");
+        const icon = document.getElementById("passwordIcon");
+
+        if (password && button && icon) {
+            button.addEventListener("click", function () {
+                const show = password.type === "password";
+
+                password.type = show ? "text" : "password";
+
+                button.setAttribute(
+                    "aria-label",
+                    show ? "Hide password" : "Show password"
+                );
+
+                icon.setAttribute(
+                    "data-lucide",
+                    show ? "eye-off" : "eye"
+                );
+
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            });
+        }
+
+        /*
+         * Clear login fields when this page is restored from browser
+         * back/forward cache, such as after logout.
+         */
+        function clearLoginFields() {
+            const email = document.getElementById("loginEmail");
+            const pass = document.getElementById("loginPassword");
+            const role = document.getElementById("loginRole");
+
+            if (email) {
+                email.value = "";
+                email.defaultValue = "";
+            }
+
+            if (pass) {
+                pass.value = "";
+                pass.defaultValue = "";
+            }
+
+            if (role) {
+                role.selectedIndex = 0;
+            }
+        }
+
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted) {
+                clearLoginFields();
+            }
+        });
+
+        /*
+         * Do not clear fields when the user clicks or focuses them.
+         * This only clears when the browser restores the page from cache.
+         */
+    });
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+</body>
+</html>
+```

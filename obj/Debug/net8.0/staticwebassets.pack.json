@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\HealthcareManagementSystem (2)\\wwwroot\\css\\DoctorDashboard.css",
+      "PackagePath": "staticwebassets\\css\\DoctorDashboard.css"
+    },
+    {
+      "Id": "D:\\HealthcareManagementSystem (2)\\wwwroot\\css\\admin.css",
+      "PackagePath": "staticwebassets\\css\\admin.css"
+    },
+    {
+      "Id": "D:\\HealthcareManagementSystem (2)\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "D:\\HealthcareManagementSystem (2)\\wwwroot\\images\\.gitkeep",
+      "PackagePath": "staticwebassets\\images\\.gitkeep"
+    },
+    {
+      "Id": "D:\\HealthcareManagementSystem (2)\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "D:\\HealthcareManagementSystem (2)\\wwwroot\\uploads\\.gitkeep",
+      "PackagePath": "staticwebassets\\uploads\\.gitkeep"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.HealthcareManagementSystem.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.HealthcareManagementSystem.props",
+      "PackagePath": "build\\HealthcareManagementSystem.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.HealthcareManagementSystem.props",
+      "PackagePath": "buildMultiTargeting\\HealthcareManagementSystem.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.HealthcareManagementSystem.props",
+      "PackagePath": "buildTransitive\\HealthcareManagementSystem.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

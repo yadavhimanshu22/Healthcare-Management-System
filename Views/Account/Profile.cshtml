@@ -1,0 +1,1232 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<HealthcareManagementSystem.Models.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = null;
+
+    var currentUser = await UserManager.GetUserAsync(User);
+
+    var fullName = currentUser?.FullName
+                   ?? User.Identity?.Name
+                   ?? "Administrator";
+
+    var email = currentUser?.Email ?? "";
+    var phone = currentUser?.PhoneNumber ?? "";
+
+    var firstLetter = string.IsNullOrWhiteSpace(fullName)
+        ? "A"
+        : fullName.Trim().Substring(0, 1).ToUpper();
+
+    var isAdmin =
+        User.IsInRole("Administrator") ||
+        User.IsInRole("Admin");
+
+    var backUrl = isAdmin
+        ? Url.Action("Dashboard", "Admin")
+        : Url.Action("Index", "Home");
+
+    var roleName = isAdmin
+        ? "Administrator"
+        : "Healthcare User";
+
+    var accessLevel = isAdmin
+        ? "Full Administrator"
+        : "Standard User";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>My Profile - HealthCare</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 15% 5%,
+                    rgba(0, 119, 255, .10),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(0, 119, 255, .07),
+                    transparent 30%
+                ),
+                #02070d;
+
+            color: #ffffff;
+        }
+
+        /* =========================
+           PAGE
+        ========================== */
+
+        .profile-page {
+            min-height: 100vh;
+            padding: 30px 20px 60px;
+        }
+
+        .profile-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* =========================
+           TOP BAR
+        ========================== */
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 22px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 11px 18px;
+
+            background: #087cff;
+            color: #ffffff;
+
+            border: 1px solid #087cff;
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition: .2s ease;
+        }
+
+        .back-btn:hover {
+            background: #0069df;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .secure-label {
+            color: #617b94;
+            font-size: 13px;
+        }
+
+        /* =========================
+           CARD
+        ========================== */
+
+        .profile-card {
+            background: #07111c;
+
+            border: 1px solid rgba(255,255,255,.08);
+
+            border-radius: 22px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 25px 80px rgba(0,0,0,.50);
+        }
+
+        /* =========================
+           COVER
+        ========================== */
+
+        .profile-cover {
+            position: relative;
+
+            padding: 40px;
+
+            background:
+                radial-gradient(
+                    circle at 90% 0%,
+                    rgba(255,255,255,.12),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #086fe5,
+                    #063f8d
+                );
+
+            overflow: hidden;
+        }
+
+        .profile-cover::after {
+            content: "";
+
+            position: absolute;
+
+            width: 260px;
+            height: 260px;
+
+            right: -100px;
+            top: -130px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,.06);
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 7px 13px;
+
+            background:
+                rgba(255,255,255,.12);
+
+            border:
+                1px solid rgba(255,255,255,.15);
+
+            border-radius: 8px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            margin-bottom: 14px;
+        }
+
+        .profile-cover h1 {
+            margin: 0;
+
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .profile-cover p {
+            margin: 8px 0 0;
+
+            color: #d8eaff;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+           BODY
+        ========================== */
+
+        .profile-body {
+            padding: 38px;
+        }
+
+        /* =========================
+           USER HEADER
+        ========================== */
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+
+            padding-bottom: 30px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.07);
+        }
+
+        .profile-avatar {
+            width: 105px;
+            height: 105px;
+
+            min-width: 105px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1585ff,
+                    #0754aa
+                );
+
+            border:
+                5px solid rgba(255,255,255,.07);
+
+            box-shadow:
+                0 12px 35px rgba(0,117,255,.25);
+
+            font-size: 38px;
+            font-weight: 800;
+        }
+
+        .user-info h2 {
+            margin: 0;
+
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .user-info p {
+            margin: 5px 0 10px;
+
+            color: #7892a9;
+
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 6px 11px;
+
+            background:
+                rgba(28,190,112,.10);
+
+            border:
+                1px solid rgba(28,190,112,.20);
+
+            border-radius: 20px;
+
+            color: #35d58b;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            background: #22c77a;
+
+            border-radius: 50%;
+        }
+
+        /* =========================
+           SECTION
+        ========================== */
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-top: 30px;
+            margin-bottom: 18px;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background:
+                rgba(8,124,255,.12);
+
+            color: #1687ff;
+        }
+
+        .section-title h3 {
+            margin: 0;
+
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .section-title p {
+            margin: 2px 0 0;
+
+            color: #607b95;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           INFORMATION
+        ========================== */
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 16px;
+        }
+
+        .info-box {
+            padding: 19px;
+
+            background: #0a1724;
+
+            border:
+                1px solid rgba(255,255,255,.07);
+
+            border-radius: 13px;
+
+            transition: .2s ease;
+        }
+
+        .info-box:hover {
+            background: #0c1b2a;
+
+            border-color:
+                rgba(8,124,255,.30);
+        }
+
+        .info-label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #607b95;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: .5px;
+        }
+
+        .info-value {
+            color: #ffffff;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            word-break: break-word;
+        }
+
+        .active-text {
+            color: #32d486;
+        }
+
+        /* =========================
+           ALERTS
+        ========================== */
+
+        .success-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 20px;
+
+            padding: 13px 16px;
+
+            background:
+                rgba(28,190,112,.10);
+
+            border:
+                1px solid rgba(28,190,112,.22);
+
+            border-radius: 10px;
+
+            color: #42d991;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .error-message {
+            margin-bottom: 20px;
+
+            padding: 13px 16px;
+
+            background:
+                rgba(255,70,70,.08);
+
+            border:
+                1px solid rgba(255,70,70,.20);
+
+            border-radius: 10px;
+
+            color: #ff8b8b;
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           EDIT SECTION
+        ========================== */
+
+        .edit-section {
+            padding: 25px;
+
+            background: #081522;
+
+            border:
+                1px solid rgba(8,124,255,.14);
+
+            border-radius: 16px;
+        }
+
+        .edit-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #b7cadb;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            height: 46px;
+
+            padding: 0 14px;
+
+            background: #050d15;
+
+            color: #ffffff;
+
+            border:
+                1px solid rgba(255,255,255,.10);
+
+            border-radius: 9px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            transition: .2s ease;
+        }
+
+        .form-control-custom:focus {
+            border-color: #087cff;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(8,124,255,.10);
+        }
+
+        .form-control-custom::placeholder {
+            color: #536b81;
+        }
+
+        .readonly-field {
+            color: #73899c;
+
+            background: #09131d;
+
+            cursor: not-allowed;
+        }
+
+        .form-help {
+            margin-top: 6px;
+
+            color: #536b81;
+
+            font-size: 11px;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 23px;
+        }
+
+        .save-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 11px 20px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: #087cff;
+
+            color: #ffffff;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+        }
+
+        .save-btn:hover {
+            background: #0069df;
+
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 10px 18px;
+
+            border:
+                1px solid rgba(255,255,255,.10);
+
+            border-radius: 9px;
+
+            background: #101e2b;
+
+            color: #c5d5e5;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .cancel-btn:hover {
+            background: #152738;
+
+            color: #ffffff;
+        }
+
+        /* =========================
+           SECURITY NOTE
+        ========================== */
+
+        .security-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+
+            margin-top: 28px;
+
+            padding: 17px;
+
+            background: #08131f;
+
+            border:
+                1px solid rgba(255,255,255,.07);
+
+            border-radius: 12px;
+
+            color: #6d8499;
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .security-note i {
+            margin-top: 2px;
+
+            color: #087cff;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @@media (max-width: 750px) {
+
+            .profile-page {
+                padding:
+                    18px 12px 40px;
+            }
+
+            .top-bar {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 12px;
+            }
+
+            .profile-cover {
+                padding: 28px 24px;
+            }
+
+            .profile-cover h1 {
+                font-size: 27px;
+            }
+
+            .profile-body {
+                padding: 24px 20px;
+            }
+
+            .user-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+            .info-grid,
+            .edit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .save-btn,
+            .cancel-btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="profile-page">
+
+    <div class="profile-wrapper">
+
+        <!-- =========================
+             TOP
+        ========================== -->
+
+        <div class="top-bar">
+
+            <a href="@backUrl"
+               class="back-btn">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+            <div class="secure-label">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Secure Account
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PROFILE CARD
+        ========================== -->
+
+        <div class="profile-card">
+
+
+            <!-- COVER -->
+
+            <div class="profile-cover">
+
+                <div class="cover-content">
+
+                    <div class="cover-badge">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                        @roleName Profile
+
+                    </div>
+
+                    <h1>
+                        My Profile
+                    </h1>
+
+                    <p>
+                        View and manage your healthcare account information.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- BODY -->
+
+            <div class="profile-body">
+
+
+                <!-- SUCCESS -->
+
+                @if (TempData["ProfileSuccess"] != null)
+                {
+                    <div class="success-message">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        @TempData["ProfileSuccess"]
+
+                    </div>
+                }
+
+
+                <!-- ERROR -->
+
+                @if (TempData["ProfileError"] != null)
+                {
+                    <div class="error-message">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        @TempData["ProfileError"]
+
+                    </div>
+                }
+
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="error-message">
+
+                        <strong>
+                            Please correct the following:
+                        </strong>
+
+                        <div asp-validation-summary="All"></div>
+
+                    </div>
+                }
+
+
+                <!-- =========================
+                     USER HEADER
+                ========================== -->
+
+                <div class="user-header">
+
+                    <div class="profile-avatar">
+
+                        @firstLetter
+
+                    </div>
+
+
+                    <div class="user-info">
+
+                        <h2>
+                            @fullName
+                        </h2>
+
+                        <p>
+                            @roleName
+                        </p>
+
+                        <span class="status-badge">
+
+                            <span class="status-dot"></span>
+
+                            Active Account
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     ACCOUNT INFORMATION
+                ========================== -->
+
+                <div class="section-title">
+
+                    <div class="section-icon">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Account Information
+                        </h3>
+
+                        <p>
+                            Your registered account details
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-grid">
+
+
+                    <!-- NAME -->
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            FULL NAME
+                        </span>
+
+                        <div class="info-value">
+                            @fullName
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            EMAIL ADDRESS
+                        </span>
+
+                        <div class="info-value">
+
+                            @(string.IsNullOrWhiteSpace(email)
+                                ? "Not added"
+                                : email)
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            PHONE NUMBER
+                        </span>
+
+                        <div class="info-value">
+
+                            @(string.IsNullOrWhiteSpace(phone)
+                                ? "Not added"
+                                : phone)
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ROLE -->
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            ROLE
+                        </span>
+
+                        <div class="info-value">
+                            @roleName
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            ACCOUNT STATUS
+                        </span>
+
+                        <div class="info-value active-text">
+                            Active
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACCESS -->
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            ACCESS LEVEL
+                        </span>
+
+                        <div class="info-value">
+                            @accessLevel
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     EDIT PROFILE
+                ========================== -->
+
+                <div class="section-title">
+
+                    <div class="section-icon">
+
+                        <i class="fa-solid fa-pen-to-square"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Edit Profile
+                        </h3>
+
+                        <p>
+                            Update your personal information
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="edit-section">
+
+                    <form method="post"
+                          action="/Account/Profile">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <div class="edit-grid">
+
+
+                            <!-- FULL NAME -->
+
+                            <div class="form-group">
+
+                                <label for="FullName">
+                                    Full Name
+                                </label>
+
+                                <input type="text"
+                                       id="FullName"
+                                       name="fullName"
+                                       class="form-control-custom"
+                                       value="@fullName"
+                                       maxlength="100"
+                                       autocomplete="name"
+                                       required />
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="form-group">
+
+                                <label for="Email">
+                                    Email Address
+                                </label>
+
+                                <input type="email"
+                                       id="Email"
+                                       class="form-control-custom readonly-field"
+                                       value="@email"
+                                       readonly />
+
+                                <div class="form-help">
+                                    Email address cannot be changed from this page.
+                                </div>
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div class="form-group">
+
+                                <label for="PhoneNumber">
+                                    Phone Number
+                                </label>
+
+                                <input type="tel"
+                                       id="PhoneNumber"
+                                       name="phoneNumber"
+                                       class="form-control-custom"
+                                       value="@phone"
+                                       maxlength="10"
+                                       minlength="10"
+                                       inputmode="numeric"
+                                       autocomplete="tel"
+                                       pattern="[0-9]{10}"
+                                       placeholder="Enter 10 digit phone number"
+                                       required />
+
+                                <div class="form-help">
+                                    Enter exactly 10 digits.
+                                </div>
+
+                            </div>
+
+
+                            <!-- ROLE -->
+
+                            <div class="form-group">
+
+                                <label for="Role">
+                                    Account Role
+                                </label>
+
+                                <input type="text"
+                                       id="Role"
+                                       class="form-control-custom readonly-field"
+                                       value="@roleName"
+                                       readonly />
+
+                                <div class="form-help">
+                                    Role is controlled by the system.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+
+                        <div class="action-buttons">
+
+                            <button type="submit"
+                                    class="save-btn">
+
+                                <i class="fa-solid fa-check"></i>
+
+                                Save Changes
+
+                            </button>
+
+
+                            <a href="@backUrl"
+                               class="cancel-btn">
+
+                                <i class="fa-solid fa-xmark"></i>
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- SECURITY -->
+
+                <div class="security-note">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <div>
+
+                        <strong>
+                            Account Security
+                        </strong>
+
+                        <br />
+
+                        Your account information is protected by the
+                        healthcare management system. Email and role
+                        changes are restricted from this profile page.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Allow only numbers in phone field
+    const phoneInput =
+        document.getElementById("PhoneNumber");
+
+    if (phoneInput) {
+
+        phoneInput.addEventListener(
+            "input",
+            function () {
+
+                this.value =
+                    this.value
+                        .replace(/[^0-9]/g, "")
+                        .slice(0, 10);
+
+            }
+        );
+
+    }
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,5957 @@
+@using Microsoft.AspNetCore.Identity
+@using HealthcareManagementSystem.Models
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    Layout = null;
+
+    var loginEmail =
+        TempData["LoginEmail"]?.ToString() ?? "";
+
+    var loginRole =
+        TempData["LoginRole"]?.ToString() ?? "";
+
+    var loginError =
+        TempData["LoginError"]?.ToString();
+
+    var registrationSuccess =
+        TempData["RegistrationSuccess"]?.ToString();
+
+    var openLoginPopup =
+        TempData["OpenLoginPopup"]?.ToString() == "true";
+
+    var currentUser =
+        User.Identity?.IsAuthenticated == true
+            ? await UserManager.GetUserAsync(User)
+            : null;
+
+    var displayName =
+        currentUser?.FullName
+        ?? User.Identity?.Name
+        ?? "My Account";
+
+    var firstLetter =
+        !string.IsNullOrWhiteSpace(displayName)
+            ? displayName.Trim().Substring(0, 1).ToUpper()
+            : "U";
+}
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complete Healthcare Management System</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+    /* =========================================================
+       HEALTHCARE DARK BLUE + DARK RED THEME
+       Existing HTML / JS / Structure remains unchanged
+    ========================================================= */
+
+    @@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+
+    /* =========================================================
+       ROOT
+    ========================================================= */
+
+    :root {
+        --hc-navy: #06152d;
+        --hc-navy-2: #091d3b;
+        --hc-navy-3: #0d274d;
+
+        --hc-red: #741827;
+        --hc-red-2: #921f38;
+        --hc-red-3: #bd3d58;
+
+        --hc-red-light: #df6b82;
+
+        --hc-white: #ffffff;
+
+        --hc-text: #f8fafc;
+        --hc-muted: #9fb2ca;
+
+        --hc-border: rgba(255,255,255,.10);
+
+        --hc-card: rgba(255,255,255,.045);
+        --hc-card-hover: rgba(125,27,47,.22);
+    }
+
+
+    /* =========================================================
+       BODY
+    ========================================================= */
+
+    html {
+        scroll-behavior: smooth;
+        background: var(--hc-navy);
+    }
+
+
+    body {
+        margin: 0;
+
+        font-family:
+            'Plus Jakarta Sans',
+            'Segoe UI',
+            Arial,
+            sans-serif;
+
+        background:
+            radial-gradient(
+                circle at 85% 10%,
+                rgba(120, 25, 44, .22),
+                transparent 28%
+            ),
+
+            radial-gradient(
+                circle at 5% 65%,
+                rgba(20, 70, 130, .18),
+                transparent 30%
+            ),
+
+            linear-gradient(
+                135deg,
+                #06152d 0%,
+                #081d3b 50%,
+                #151b3b 100%
+            );
+
+        color: #ffffff;
+
+        min-height: 100vh;
+    }
+
+
+    /* =========================================================
+       GENERAL TEXT
+    ========================================================= */
+
+    .text-slate-900 {
+        color: #ffffff !important;
+    }
+
+    .text-slate-800 {
+        color: #f3f6fa !important;
+    }
+
+    .text-slate-700 {
+        color: #d7e1ec !important;
+    }
+
+    .text-slate-600 {
+        color: #b3c1d0 !important;
+    }
+
+    .text-slate-500 {
+        color: #91a5bb !important;
+    }
+
+    .text-slate-400 {
+        color: #8095ad !important;
+    }
+
+
+    /* =========================================================
+       MAIN NAVBAR
+    ========================================================= */
+
+    header.sticky {
+
+        background:
+            linear-gradient(
+                135deg,
+                #350b12 0%,
+                #57121d 48%,
+                #711827 100%
+            ) !important;
+
+        border-bottom:
+            1px solid rgba(255,255,255,.12) !important;
+
+        box-shadow:
+            0 8px 30px rgba(0,0,0,.30) !important;
+    }
+
+
+    header.sticky > div {
+
+        background: transparent !important;
+    }
+
+
+    /* Brand */
+
+    header.sticky a[href="/Home/Index"] > div:first-child {
+
+        background:
+            linear-gradient(
+                135deg,
+                #ffffff,
+                #f4d8dd
+            ) !important;
+
+        color: #741827 !important;
+
+        box-shadow:
+            0 8px 20px rgba(0,0,0,.25) !important;
+    }
+
+
+    header.sticky a[href="/Home/Index"] span.text-xl {
+
+        color: #ffffff !important;
+    }
+
+
+    header.sticky a[href="/Home/Index"] span.text-\[9\.5px\] {
+
+        color: #e7aeb8 !important;
+    }
+
+
+    /* Navbar links */
+
+    header.sticky nav a,
+    header.sticky nav button {
+
+        color: #f8e8eb !important;
+    }
+
+
+    header.sticky nav a:hover,
+    header.sticky nav button:hover {
+
+        color: #ffffff !important;
+
+        background:
+            rgba(255,255,255,.10) !important;
+    }
+
+
+    /* Active Home */
+
+    header.sticky nav a.text-blue-600 {
+
+        color: #ffffff !important;
+
+        background:
+            rgba(255,255,255,.08) !important;
+    }
+
+
+    /* Get Started */
+
+    header.sticky .bg-blue-600 {
+
+        background:
+            linear-gradient(
+                135deg,
+                #b83b55,
+                #8b1e35
+            ) !important;
+
+        color: #ffffff !important;
+
+        box-shadow:
+            0 8px 20px rgba(120,25,44,.35) !important;
+    }
+
+
+    header.sticky .bg-blue-600:hover {
+
+        background:
+            linear-gradient(
+                135deg,
+                #c84961,
+                #9b243d
+            ) !important;
+    }
+
+
+    /* Login */
+
+    header.sticky .border-slate-300 {
+
+        border-color:
+            rgba(255,255,255,.30) !important;
+
+        color: #ffffff !important;
+
+        background:
+            rgba(255,255,255,.04) !important;
+    }
+
+
+    header.sticky .border-slate-300:hover {
+
+        border-color:
+            rgba(255,255,255,.60) !important;
+
+        background:
+            rgba(255,255,255,.10) !important;
+    }
+
+
+    /* =========================================================
+       NAV DROPDOWNS
+    ========================================================= */
+
+    header .bg-white {
+
+        background:
+            #0b203e !important;
+
+        color: #ffffff !important;
+
+        border-color:
+            rgba(255,255,255,.10) !important;
+    }
+
+
+    header .bg-white li a {
+
+        color: #d8e3ef !important;
+    }
+
+
+    header .bg-white li a:hover {
+
+        background:
+            rgba(143,31,53,.22) !important;
+
+        color: #ffffff !important;
+    }
+
+
+    header .border-slate-100,
+    header .border-slate-200 {
+
+        border-color:
+            rgba(255,255,255,.09) !important;
+    }
+
+
+    /* =========================================================
+       MOBILE NAVBAR
+    ========================================================= */
+
+    #mobileNav {
+
+        background:
+            #091d3b !important;
+
+        border-color:
+            rgba(255,255,255,.10) !important;
+    }
+
+
+    #mobileNav a,
+    #mobileNav button {
+
+        color: #d9e4ef !important;
+    }
+
+
+    #mobileNav a:hover,
+    #mobileNav button:hover {
+
+        background:
+            rgba(126,28,47,.20) !important;
+
+        color: #ffffff !important;
+    }
+
+
+    /* =========================================================
+       TREATMENT MEGA MENU
+    ========================================================= */
+
+    #treatmentsMegaMenu {
+
+        background:
+            rgba(7,23,45,.98) !important;
+
+        border-color:
+            rgba(255,255,255,.10) !important;
+
+        box-shadow:
+            0 25px 60px rgba(0,0,0,.40) !important;
+    }
+
+
+    #treatmentsMegaMenu h4 {
+
+        color: #df6b82 !important;
+
+        border-color:
+            #8c2037 !important;
+    }
+
+
+    #treatmentsMegaMenu a {
+
+        color: #c7d4e2 !important;
+    }
+
+
+    #treatmentsMegaMenu a:hover {
+
+        color: #ffffff !important;
+    }
+
+
+    /* =========================================================
+       HERO SECTION
+    ========================================================= */
+
+    section.relative.bg-white {
+
+        background:
+            radial-gradient(
+                circle at 78% 35%,
+                rgba(127,27,47,.28),
+                transparent 30%
+            ),
+
+            radial-gradient(
+                circle at 10% 80%,
+                rgba(16,71,130,.25),
+                transparent 35%
+            ),
+
+            linear-gradient(
+                135deg,
+                #06152d 0%,
+                #092449 52%,
+                #191c3b 100%
+            ) !important;
+
+        border: none !important;
+    }
+
+
+    /* Hero heading */
+
+    section.relative.bg-white h1 {
+
+        color: #ffffff !important;
+    }
+
+
+    section.relative.bg-white h1 span {
+
+        color: #d95a72 !important;
+    }
+
+
+    section.relative.bg-white p {
+
+        color: #a9bbd0 !important;
+    }
+
+
+    /* Hero badge */
+
+    section.relative.bg-white .bg-blue-50 {
+
+        background:
+            rgba(130,30,49,.25) !important;
+
+        border:
+            1px solid rgba(217,90,114,.25) !important;
+    }
+
+
+    section.relative.bg-white .text-blue-700,
+    section.relative.bg-white .text-blue-600 {
+
+        color: #e17a8e !important;
+    }
+
+
+    /* Hero primary buttons */
+
+    section.relative.bg-white .bg-blue-600 {
+
+        background:
+            linear-gradient(
+                135deg,
+                #b93653,
+                #8d2037
+            ) !important;
+
+        color: #ffffff !important;
+
+        box-shadow:
+            0 10px 25px rgba(140,32,53,.35) !important;
+    }
+
+
+    section.relative.bg-white .bg-blue-600:hover {
+
+        background:
+            linear-gradient(
+                135deg,
+                #c74761,
+                #9e2942
+            ) !important;
+    }
+
+
+    /* Hero secondary button */
+
+    section.relative.bg-white .border-slate-300 {
+
+        border-color:
+            rgba(255,255,255,.24) !important;
+
+        color: #ffffff !important;
+
+        background:
+            rgba(255,255,255,.04) !important;
+    }
+
+
+    section.relative.bg-white .border-slate-300:hover {
+
+        background:
+            rgba(255,255,255,.10) !important;
+
+        border-color:
+            rgba(255,255,255,.40) !important;
+    }
+
+
+    /* =========================================================
+       HERO MEDICAL CIRCLE
+    ========================================================= */
+
+    section.relative.bg-white .bg-blue-600.rounded-full {
+
+        background:
+            radial-gradient(
+                circle at 35% 30%,
+                #c84961 0%,
+                #8b2037 52%,
+                #4a101d 100%
+            ) !important;
+
+        box-shadow:
+            0 30px 70px rgba(0,0,0,.35),
+            0 0 80px rgba(150,30,50,.18) !important;
+    }
+
+
+    section.relative.bg-white .bg-white\/20 {
+
+        background:
+            rgba(255,255,255,.11) !important;
+    }
+
+
+    /* =========================================================
+       ALL MAJOR SECTIONS
+    ========================================================= */
+
+    #services-section,
+    #departments-section,
+    #booking-portal,
+    #contact-section {
+
+        color: #ffffff !important;
+
+        border-color:
+            rgba(255,255,255,.08) !important;
+    }
+
+
+    /* Services */
+
+    #services-section {
+
+        background:
+            linear-gradient(
+                180deg,
+                #081d3b,
+                #06152d
+            ) !important;
+    }
+
+
+    /* Departments */
+
+    #departments-section {
+
+        background:
+            #06152d !important;
+    }
+
+
+    /* Booking */
+
+    #booking-portal {
+
+        background:
+            #081d3b !important;
+    }
+
+
+    /* Contact */
+
+    #contact-section {
+
+        background:
+            #06152d !important;
+    }
+
+
+    /* =========================================================
+       SECTION HEADINGS
+    ========================================================= */
+
+    #services-section h2,
+    #departments-section h2,
+    #booking-portal h2,
+    #contact-section h2 {
+
+        color: #ffffff !important;
+    }
+
+
+    #services-section p,
+    #departments-section p,
+    #booking-portal p,
+    #contact-section p {
+
+        color: #91a6bd !important;
+    }
+
+
+    /* =========================================================
+       SERVICE CARDS
+    ========================================================= */
+
+    #services-section .bg-white {
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255,255,255,.065),
+                rgba(255,255,255,.025)
+            ) !important;
+
+        border:
+            1px solid rgba(255,255,255,.09) !important;
+
+        box-shadow:
+            0 12px 35px rgba(0,0,0,.16) !important;
+
+        color: #ffffff !important;
+    }
+
+
+    #services-section .bg-white:hover {
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(130,28,48,.25),
+                rgba(255,255,255,.055)
+            ) !important;
+
+        border-color:
+            rgba(195,61,88,.45) !important;
+
+        transform:
+            translateY(-4px);
+    }
+
+
+    #services-section .text-slate-900 {
+
+        color: #ffffff !important;
+    }
+
+
+    #services-section .text-slate-500 {
+
+        color: #8fa5bd !important;
+    }
+
+
+    #services-section .bg-blue-50 {
+
+        background:
+            rgba(130,28,48,.22) !important;
+
+        color: #e27a8f !important;
+    }
+
+
+    /* =========================================================
+       DEPARTMENT CARDS
+    ========================================================= */
+
+    #departments-section .bg-white {
+
+        background:
+            rgba(255,255,255,.045) !important;
+
+        border-color:
+            rgba(255,255,255,.08) !important;
+
+        color: #ffffff !important;
+    }
+
+
+    #departments-section .bg-white:hover {
+
+        background:
+            rgba(128,27,47,.18) !important;
+
+        border-color:
+            rgba(190,58,84,.35) !important;
+    }
+
+
+    #departments-section .text-slate-900 {
+
+        color: #ffffff !important;
+    }
+
+
+    #departments-section .text-slate-500 {
+
+        color: #91a5bc !important;
+    }
+
+
+    /* =========================================================
+       BOOKING PORTAL
+    ========================================================= */
+
+    #booking-portal .bg-white {
+
+        background:
+            #0b213f !important;
+
+        border-color:
+            rgba(255,255,255,.09) !important;
+
+        color: #ffffff !important;
+
+        box-shadow:
+            0 20px 45px rgba(0,0,0,.22) !important;
+    }
+
+
+    #booking-portal input,
+    #booking-portal select,
+    #booking-portal textarea {
+
+        background:
+            #071a34 !important;
+
+        color:
+            #ffffff !important;
+
+        border-color:
+            rgba(255,255,255,.14) !important;
+    }
+
+
+    #booking-portal input::placeholder {
+
+        color:
+            #7288a0 !important;
+    }
+
+
+    #booking-portal input:focus,
+    #booking-portal select:focus {
+
+        border-color:
+            #a72e49 !important;
+
+        box-shadow:
+            0 0 0 3px rgba(167,46,73,.18) !important;
+    }
+
+
+    #booking-portal .bg-blue-600 {
+
+        background:
+            linear-gradient(
+                135deg,
+                #a92f4a,
+                #7e1c32
+            ) !important;
+    }
+
+
+    #booking-portal .bg-blue-600:hover {
+
+        background:
+            linear-gradient(
+                135deg,
+                #c03b58,
+                #92223b
+            ) !important;
+    }
+
+
+    /* =========================================================
+       TABLE
+    ========================================================= */
+
+    #booking-portal table {
+
+        color: #dce6f0 !important;
+    }
+
+
+    #booking-portal thead {
+
+        background:
+            #071a34 !important;
+    }
+
+
+    #booking-portal tbody tr {
+
+        border-color:
+            rgba(255,255,255,.07) !important;
+    }
+
+
+    #booking-portal tbody tr:hover {
+
+        background:
+            rgba(128,27,47,.10) !important;
+    }
+
+
+    /* =========================================================
+       TABS
+    ========================================================= */
+
+    #booking-portal .bg-slate-900 {
+
+        background:
+            #030d1d !important;
+    }
+
+
+    #booking-portal .text-blue-600 {
+
+        color:
+            #df7085 !important;
+    }
+
+
+    /* =========================================================
+       CONTACT
+    ========================================================= */
+
+    #contact-section .bg-blue-50 {
+
+        background:
+            rgba(127,28,48,.20) !important;
+
+        color:
+            #df6d82 !important;
+    }
+
+
+    #contact-section .bg-emerald-50 {
+
+        background:
+            rgba(26,112,82,.18) !important;
+
+        color:
+            #67c8a2 !important;
+    }
+
+
+    #contact-section .bg-purple-50 {
+
+        background:
+            rgba(109,62,145,.20) !important;
+
+        color:
+            #c49ae4 !important;
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+
+    footer.bg-slate-900 {
+
+        background:
+            #030b19 !important;
+
+        color:
+            #8297ae !important;
+
+        border-color:
+            rgba(255,255,255,.07) !important;
+    }
+
+
+    footer h4,
+    footer h5 {
+
+        color: #ffffff !important;
+    }
+
+
+    footer a {
+
+        color: #92a6bb !important;
+    }
+
+
+    footer a:hover {
+
+        color: #e07186 !important;
+    }
+
+
+    /* =========================================================
+       DETAIL MODAL
+    ========================================================= */
+
+    #detailModal .bg-white {
+
+        background:
+            #0b213f !important;
+
+        color:
+            #ffffff !important;
+
+        border:
+            1px solid rgba(255,255,255,.10) !important;
+    }
+
+
+    #detailModal .text-slate-900 {
+
+        color:
+            #ffffff !important;
+    }
+
+
+    #detailModal .text-slate-600,
+    #detailModal .text-slate-500 {
+
+        color:
+            #9aafc4 !important;
+    }
+
+
+    #detailModal .border-slate-200 {
+
+        border-color:
+            rgba(255,255,255,.10) !important;
+    }
+
+
+    #detailModal .bg-blue-600 {
+
+        background:
+            linear-gradient(
+                135deg,
+                #a82e49,
+                #791b31
+            ) !important;
+    }
+
+
+    /* =========================================================
+       LOGIN MODAL
+    ========================================================= */
+
+    #loginModal {
+
+        background:
+            rgba(1,8,20,.82) !important;
+    }
+
+
+    #loginModal > div {
+
+        background:
+            #0b213f !important;
+
+        border:
+            1px solid rgba(255,255,255,.10) !important;
+
+        box-shadow:
+            0 30px 80px rgba(0,0,0,.55) !important;
+    }
+
+
+    /* Login modal header */
+
+    #loginModal > div > div:first-child {
+
+        background:
+            linear-gradient(
+                135deg,
+                #350b12,
+                #761827,
+                #9d2943
+            ) !important;
+    }
+
+
+    #loginModal .text-blue-100 {
+
+        color:
+            #f0c6ce !important;
+    }
+
+
+    #loginModal .bg-white\/15 {
+
+        background:
+            rgba(255,255,255,.12) !important;
+    }
+
+
+    #loginModal input {
+
+        background:
+            #071a34 !important;
+
+        color:
+            #ffffff !important;
+
+        border-color:
+            rgba(255,255,255,.13) !important;
+    }
+
+
+    #loginModal input::placeholder {
+
+        color:
+            #7288a0 !important;
+    }
+
+
+    #loginModal input:focus {
+
+        border-color:
+            #a62e49 !important;
+
+        box-shadow:
+            0 0 0 3px rgba(166,46,73,.16) !important;
+    }
+
+
+    #loginModal .bg-blue-600 {
+
+        background:
+            linear-gradient(
+                135deg,
+                #b23552,
+                #7e1d34
+            ) !important;
+    }
+
+
+    #loginModal .bg-blue-600:hover {
+
+        background:
+            linear-gradient(
+                135deg,
+                #c74460,
+                #92243c
+            ) !important;
+    }
+
+
+    /* =========================================================
+       LOGIN ERROR
+    ========================================================= */
+
+    #loginModal .bg-red-50 {
+
+        background:
+            rgba(130,28,48,.15) !important;
+
+        border-color:
+            rgba(210,70,94,.30) !important;
+    }
+
+
+    #loginModal .text-red-700 {
+
+        color:
+            #f09aaa !important;
+    }
+
+
+    #loginModal .text-red-600 {
+
+        color:
+            #df7185 !important;
+    }
+
+
+    /* =========================================================
+       WHITE CARDS OUTSIDE SPECIFIC SECTIONS
+    ========================================================= */
+
+    .custom-shadow {
+
+        box-shadow:
+            0 20px 45px rgba(0,0,0,.25) !important;
+    }
+
+
+    /* =========================================================
+       HEART ANIMATION
+    ========================================================= */
+
+    @@keyframes heartbeat {
+
+        0% {
+            transform: scale(1);
+        }
+
+        14% {
+            transform: scale(1.10);
+        }
+
+        28% {
+            transform: scale(1);
+        }
+
+        42% {
+            transform: scale(1.15);
+        }
+
+        70% {
+            transform: scale(1);
+        }
+
+    }
+
+
+    .heart-pulse {
+
+        animation:
+            heartbeat 2s infinite ease-in-out;
+    }
+
+
+    /* =========================================================
+       SCROLLBAR
+    ========================================================= */
+
+    ::-webkit-scrollbar {
+
+        width: 9px;
+    }
+
+
+    ::-webkit-scrollbar-track {
+
+        background:
+            #030b19;
+    }
+
+
+    ::-webkit-scrollbar-thumb {
+
+        background:
+            #671625;
+
+        border-radius:
+            10px;
+    }
+
+
+    ::-webkit-scrollbar-thumb:hover {
+
+        background:
+            #96263f;
+    }
+
+
+    /* =========================================================
+       SELECTION
+    ========================================================= */
+
+    ::selection {
+
+        background:
+            #8a2037;
+
+        color:
+            #ffffff;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 768px) {
+
+        header.sticky {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #350b12,
+                    #711827
+                ) !important;
+        }
+
+
+        section.relative.bg-white {
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #06152d,
+                    #091d3b
+                ) !important;
+        }
+
+
+        .hero-pulse,
+        .heart-pulse {
+
+            animation-duration:
+                2.5s;
+        }
+
+    }
+
+
+    @@media (max-width: 640px) {
+
+        section.relative.bg-white h1 {
+
+            font-size:
+                2.6rem !important;
+
+            line-height:
+                1.08 !important;
+        }
+
+
+        #services-section,
+        #departments-section,
+        #booking-portal,
+        #contact-section {
+
+            background:
+                #06152d !important;
+        }
+
+    }
+    /* =========================================================
+   FINAL DARK BLUE CARD OVERRIDE
+   Removes large WHITE areas without changing HTML structure
+========================================================= */
+
+
+/* ---------------------------------------------------------
+   ALL SERVICE / FACILITY CARDS
+--------------------------------------------------------- */
+
+#services-section .bg-white,
+#services-section .rounded-2xl,
+#services-section .rounded-xl,
+#services-section .rounded-3xl {
+
+    background:
+        linear-gradient(
+            145deg,
+            #102b50 0%,
+            #0b2343 55%,
+            #0a1d38 100%
+        ) !important;
+
+    color: #ffffff !important;
+
+    border:
+        1px solid rgba(255,255,255,.10) !important;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.25) !important;
+}
+
+
+/* Service card hover */
+
+#services-section .bg-white:hover,
+#services-section .rounded-2xl:hover,
+#services-section .rounded-xl:hover,
+#services-section .rounded-3xl:hover {
+
+    background:
+        linear-gradient(
+            145deg,
+            #15375f 0%,
+            #102b50 55%,
+            #0c2241 100%
+        ) !important;
+
+    border-color:
+        rgba(190,55,82,.55) !important;
+
+    box-shadow:
+        0 22px 55px rgba(0,0,0,.32),
+        0 0 25px rgba(145,30,52,.10) !important;
+
+    transform:
+        translateY(-4px);
+}
+
+
+/* Service card heading */
+
+#services-section .bg-white h3,
+#services-section .bg-white h4,
+#services-section .rounded-2xl h3,
+#services-section .rounded-2xl h4 {
+
+    color:
+        #ffffff !important;
+}
+
+
+/* Service card paragraph */
+
+#services-section .bg-white p,
+#services-section .rounded-2xl p,
+#services-section .rounded-xl p {
+
+    color:
+        #9fb5ce !important;
+}
+
+
+/* ---------------------------------------------------------
+   SERVICE ICON BOXES
+--------------------------------------------------------- */
+
+#services-section .bg-blue-50 {
+
+    background:
+        rgba(43,105,185,.20) !important;
+
+    color:
+        #62a9ff !important;
+
+    border:
+        1px solid rgba(90,155,230,.18) !important;
+}
+
+
+#services-section .bg-green-50 {
+
+    background:
+        rgba(25,145,105,.18) !important;
+
+    color:
+        #55d5a8 !important;
+
+    border:
+        1px solid rgba(60,190,145,.18) !important;
+}
+
+
+#services-section .bg-purple-50 {
+
+    background:
+        rgba(135,75,190,.20) !important;
+
+    color:
+        #c28aff !important;
+
+    border:
+        1px solid rgba(170,100,240,.18) !important;
+}
+
+
+/* ---------------------------------------------------------
+   HOSPITAL FACILITIES CARDS
+   Covers cards even when section id is different
+--------------------------------------------------------- */
+
+section .bg-white.shadow,
+section .bg-white.shadow-sm,
+section .bg-white.shadow-md,
+section .bg-white.shadow-lg {
+
+    background:
+        linear-gradient(
+            145deg,
+            #102b50,
+            #0a203d
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border-color:
+        rgba(255,255,255,.09) !important;
+}
+
+
+/* ---------------------------------------------------------
+   GENERAL WHITE CARDS
+   Only cards, not body/navbar
+--------------------------------------------------------- */
+
+main .bg-white.rounded-xl,
+main .bg-white.rounded-2xl,
+main .bg-white.rounded-3xl {
+
+    background:
+        linear-gradient(
+            145deg,
+            #102b50,
+            #0a203d
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border:
+        1px solid rgba(255,255,255,.09) !important;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.24) !important;
+}
+
+
+/* ---------------------------------------------------------
+   OPD SLIP / APPOINTMENT PREVIEW
+--------------------------------------------------------- */
+
+#booking-portal .bg-white {
+
+    background:
+        linear-gradient(
+            145deg,
+            #122f54 0%,
+            #0c2546 50%,
+            #091d38 100%
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border:
+        1px solid rgba(255,255,255,.10) !important;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.28) !important;
+}
+
+
+/* OPD slip heading */
+
+#booking-portal .bg-white h3,
+#booking-portal .bg-white h4,
+#booking-portal .bg-white h5 {
+
+    color:
+        #ffffff !important;
+}
+
+
+/* OPD slip text */
+
+#booking-portal .bg-white p {
+
+    color:
+        #91a9c2 !important;
+}
+
+
+/* OPD slip separator */
+
+#booking-portal .bg-white hr,
+#booking-portal .bg-white .border-slate-200 {
+
+    border-color:
+        rgba(255,255,255,.10) !important;
+}
+
+
+/* ---------------------------------------------------------
+   READY STATUS
+--------------------------------------------------------- */
+
+#booking-portal .bg-emerald-100,
+#booking-portal .bg-green-100 {
+
+    background:
+        rgba(40,190,135,.16) !important;
+
+    color:
+        #57dfac !important;
+
+    border:
+        1px solid rgba(70,210,155,.20) !important;
+}
+
+
+/* ---------------------------------------------------------
+   TICKET / EMPTY OPD ICON
+--------------------------------------------------------- */
+
+#booking-portal .text-slate-400,
+#booking-portal .text-slate-500 {
+
+    color:
+        #7892ae !important;
+}
+
+
+/* ---------------------------------------------------------
+   APPOINTMENT FORM PANEL
+--------------------------------------------------------- */
+
+#booking-portal {
+
+    background:
+        linear-gradient(
+            135deg,
+            #081a34,
+            #0a2343
+        ) !important;
+}
+
+
+/* ---------------------------------------------------------
+   FORM LABELS
+--------------------------------------------------------- */
+
+#booking-portal label {
+
+    color:
+        #dce8f4 !important;
+}
+
+
+/* ---------------------------------------------------------
+   INPUTS / SELECTS
+--------------------------------------------------------- */
+
+#booking-portal input,
+#booking-portal select,
+#booking-portal textarea {
+
+    background:
+        #071a33 !important;
+
+    color:
+        #ffffff !important;
+
+    border:
+        1px solid rgba(125,160,195,.22) !important;
+}
+
+
+/* Input hover */
+
+#booking-portal input:hover,
+#booking-portal select:hover,
+#booking-portal textarea:hover {
+
+    border-color:
+        rgba(190,55,82,.45) !important;
+}
+
+
+/* Input focus */
+
+#booking-portal input:focus,
+#booking-portal select:focus,
+#booking-portal textarea:focus {
+
+    background:
+        #081d38 !important;
+
+    border-color:
+        #b33552 !important;
+
+    box-shadow:
+        0 0 0 3px rgba(179,53,82,.15) !important;
+
+    outline:
+        none !important;
+}
+
+
+/* Placeholder */
+
+#booking-portal input::placeholder,
+#booking-portal textarea::placeholder {
+
+    color:
+        #657f9d !important;
+}
+
+
+/* ---------------------------------------------------------
+   CONFIRM BUTTON
+--------------------------------------------------------- */
+
+#booking-portal button.bg-blue-600,
+#booking-portal .bg-blue-600 {
+
+    background:
+        linear-gradient(
+            135deg,
+            #bd3654,
+            #8d2038
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border:
+        1px solid rgba(255,255,255,.08) !important;
+
+    box-shadow:
+        0 10px 25px rgba(130,25,48,.28) !important;
+}
+
+
+#booking-portal button.bg-blue-600:hover,
+#booking-portal .bg-blue-600:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #cf4662,
+            #a12640
+        ) !important;
+
+    box-shadow:
+        0 14px 32px rgba(150,30,55,.35) !important;
+}
+
+
+/* ---------------------------------------------------------
+   DASHBOARD / INTERACTIVE SYSTEM SECTION
+--------------------------------------------------------- */
+
+#dashboard-section,
+#dashboard-section .bg-white,
+.dashboard-section,
+.dashboard-section .bg-white {
+
+    background:
+        linear-gradient(
+            145deg,
+            #0d274a,
+            #091f3c
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border-color:
+        rgba(255,255,255,.09) !important;
+}
+
+
+/* Dashboard cards */
+
+#dashboard-section .rounded-xl,
+#dashboard-section .rounded-2xl,
+.dashboard-section .rounded-xl,
+.dashboard-section .rounded-2xl {
+
+    background:
+        rgba(255,255,255,.045) !important;
+
+    border:
+        1px solid rgba(255,255,255,.09) !important;
+}
+
+
+/* Dashboard card headings */
+
+#dashboard-section h3,
+#dashboard-section h4,
+.dashboard-section h3,
+.dashboard-section h4 {
+
+    color:
+        #ffffff !important;
+}
+
+
+/* Dashboard secondary text */
+
+#dashboard-section p,
+.dashboard-section p {
+
+    color:
+        #91a8c0 !important;
+}
+
+
+/* ---------------------------------------------------------
+   TABLES
+--------------------------------------------------------- */
+
+main table {
+
+    color:
+        #dce7f2 !important;
+}
+
+
+main table thead {
+
+    background:
+        #071a34 !important;
+}
+
+
+main table tbody tr {
+
+    border-color:
+        rgba(255,255,255,.07) !important;
+}
+
+
+main table tbody tr:hover {
+
+    background:
+        rgba(145,30,52,.10) !important;
+}
+
+
+/* ---------------------------------------------------------
+   MODALS
+--------------------------------------------------------- */
+
+#detailModal .bg-white,
+#loginModal .bg-white {
+
+    background:
+        linear-gradient(
+            145deg,
+            #102b50,
+            #091f3c
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border:
+        1px solid rgba(255,255,255,.10) !important;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.50) !important;
+}
+
+
+/* Modal headings */
+
+#detailModal .text-slate-900,
+#loginModal .text-slate-900 {
+
+    color:
+        #ffffff !important;
+}
+
+
+/* Modal paragraph */
+
+#detailModal .text-slate-600,
+#detailModal .text-slate-500,
+#loginModal .text-slate-600,
+#loginModal .text-slate-500 {
+
+    color:
+        #9bb0c6 !important;
+}
+
+
+/* ---------------------------------------------------------
+   REMOVE WHITE BACKGROUNDS FROM COMMON CARD UTILITIES
+--------------------------------------------------------- */
+
+main .bg-white\/95,
+main .bg-white\/90,
+main .bg-white\/80 {
+
+    background:
+        rgba(11,32,61,.94) !important;
+}
+
+
+/* ---------------------------------------------------------
+   WHITE BORDER FIX
+--------------------------------------------------------- */
+
+main .border-white {
+
+    border-color:
+        rgba(255,255,255,.10) !important;
+}
+
+
+/* ---------------------------------------------------------
+   RED ACCENT LINE
+--------------------------------------------------------- */
+
+main .border-blue-600,
+main .border-blue-500 {
+
+    border-color:
+        #9d2943 !important;
+}
+
+
+/* ---------------------------------------------------------
+   BLUE TEXT → HEALTHCARE RED ACCENT
+--------------------------------------------------------- */
+
+main .text-blue-600 {
+
+    color:
+        #df6a80 !important;
+}
+
+
+main .text-blue-700 {
+
+    color:
+        #e17b8e !important;
+}
+
+
+/* ---------------------------------------------------------
+   HOVER BLUE → RED
+--------------------------------------------------------- */
+
+main .hover\:text-blue-600:hover {
+
+    color:
+        #e2778b !important;
+}
+
+
+main .hover\:bg-blue-50:hover {
+
+    background:
+        rgba(145,30,52,.14) !important;
+}
+
+
+/* ---------------------------------------------------------
+   CARD SHINE
+--------------------------------------------------------- */
+
+main .bg-white.rounded-xl::before,
+main .bg-white.rounded-2xl::before,
+main .bg-white.rounded-3xl::before {
+
+    pointer-events:
+        none;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+
+@@media (max-width: 768px) {
+
+    #services-section .bg-white,
+    #services-section .rounded-2xl,
+    main .bg-white.rounded-xl,
+    main .bg-white.rounded-2xl,
+    main .bg-white.rounded-3xl {
+
+        background:
+            linear-gradient(
+                145deg,
+                #102b50,
+                #091f3c
+            ) !important;
+    }
+
+
+    #booking-portal .bg-white {
+
+        background:
+            #102b50 !important;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   FINAL WHITE CARD SAFETY
+--------------------------------------------------------- */
+
+/*
+   Agar koi card abhi bhi white aa raha ho,
+   usko dark healthcare card mein convert karega.
+*/
+
+main > section .bg-white {
+
+    background:
+        linear-gradient(
+            145deg,
+            #102b50,
+            #0a203d
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border-color:
+        rgba(255,255,255,.09) !important;
+}
+
+
+/* Keep form controls dark */
+
+main input.bg-white,
+main select.bg-white,
+main textarea.bg-white {
+
+    background:
+        #071a33 !important;
+
+    color:
+        #ffffff !important;
+}
+
+
+/* Keep dropdowns readable */
+
+main option {
+
+    background:
+        #0b213f;
+
+    color:
+        #ffffff;
+}
+/* ============================================================
+   APPOINTMENT / OPD SECTION
+   PROFESSIONAL CHARCOAL + WINE THEME
+   HOME PAGE DESIGN REMAINS UNCHANGED
+============================================================ */
+
+/* ============================================================
+   MAIN APPOINTMENT SECTION
+============================================================ */
+
+#booking-portal {
+    background:
+        radial-gradient(
+            circle at 85% 15%,
+            rgba(181, 47, 75, 0.10),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #15161A 0%,
+            #1A1B20 55%,
+            #111216 100%
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border-top: 1px solid rgba(255,255,255,.06) !important;
+    border-bottom: 1px solid rgba(255,255,255,.06) !important;
+}
+
+
+/* ============================================================
+   MAIN OPD CONTAINER
+============================================================ */
+
+#booking-portal .rounded-3xl {
+    background:
+        linear-gradient(
+            145deg,
+            #24252B,
+            #1C1D22
+        ) !important;
+
+    border: 1px solid rgba(255,255,255,.09) !important;
+
+    box-shadow:
+        0 30px 70px rgba(0,0,0,.42) !important;
+}
+
+
+/* ============================================================
+   TOP TABS
+============================================================ */
+
+#booking-portal nav {
+    background: #121318 !important;
+
+    border-color:
+        rgba(255,255,255,.08) !important;
+}
+
+#booking-portal nav span,
+#booking-portal nav a {
+    color: #E8E8EA !important;
+}
+
+#booking-portal nav button,
+#booking-portal nav a {
+    border: none !important;
+    color: #B8BAC2 !important;
+    transition: all .25s ease;
+}
+
+#booking-portal nav .bg-blue-600,
+#booking-portal nav .active,
+#booking-portal nav button:first-child {
+    background:
+        linear-gradient(
+            135deg,
+            #B52F4B,
+            #8D203A
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border-radius: 10px !important;
+
+    box-shadow:
+        0 8px 22px rgba(181,47,75,.28) !important;
+}
+
+#booking-portal nav button:hover,
+#booking-portal nav a:hover {
+    background:
+        rgba(181,47,75,.12) !important;
+
+    color: #FFFFFF !important;
+}
+
+
+/* ============================================================
+   HEADINGS
+============================================================ */
+
+#booking-portal h1,
+#booking-portal h2,
+#booking-portal h3,
+#booking-portal h4 {
+    color: #FFFFFF !important;
+}
+
+#booking-portal p {
+    color: #AEB0B8 !important;
+}
+
+
+/* ============================================================
+   FORM LABELS
+============================================================ */
+
+#booking-portal label {
+    color: #E7E7E9 !important;
+    font-weight: 600 !important;
+}
+
+
+/* ============================================================
+   ALL FORM INPUTS
+============================================================ */
+
+#booking-portal input,
+#booking-portal select,
+#booking-portal textarea {
+    background-color: #292A30 !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            #2B2C32,
+            #25262C
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border: 1px solid #45464D !important;
+
+    border-radius: 11px !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.025) !important;
+
+    transition: all .25s ease;
+
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+
+/* ============================================================
+   PATIENT FULL NAME
+   LIGHT BLACK / CHARCOAL
+============================================================ */
+
+#booking-portal #patientName {
+    background-color: #303136 !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            #303136 0%,
+            #28292F 100%
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border: 1px solid #4B4C53 !important;
+
+    border-radius: 11px !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 4px 12px rgba(0,0,0,.20) !important;
+
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+
+/* ============================================================
+   CONTACT PHONE
+   LIGHT BLACK / CHARCOAL
+============================================================ */
+
+#booking-portal #patientPhone {
+    background-color: #303136 !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            #303136 0%,
+            #28292F 100%
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border: 1px solid #4B4C53 !important;
+
+    border-radius: 11px !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 4px 12px rgba(0,0,0,.20) !important;
+
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+
+/* ============================================================
+   PATIENT NAME + PHONE PLACEHOLDER
+============================================================ */
+
+#booking-portal #patientName::placeholder,
+#booking-portal #patientPhone::placeholder {
+    color: #9698A1 !important;
+
+    opacity: 1 !important;
+}
+
+
+/* ============================================================
+   PATIENT NAME + PHONE HOVER
+============================================================ */
+
+#booking-portal #patientName:hover,
+#booking-portal #patientPhone:hover {
+    background-color: #34353B !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            #34353B,
+            #2B2C32
+        ) !important;
+
+    border-color:
+        #5A5B63 !important;
+}
+
+
+/* ============================================================
+   PATIENT NAME + PHONE FOCUS
+============================================================ */
+
+#booking-portal #patientName:focus,
+#booking-portal #patientPhone:focus {
+    background-color: #292A30 !important;
+
+    background:
+        #292A30 !important;
+
+    color: #FFFFFF !important;
+
+    border-color: #D6A85F !important;
+
+    outline: none !important;
+
+    box-shadow:
+        0 0 0 3px rgba(214,168,95,.12),
+        0 8px 20px rgba(0,0,0,.22) !important;
+}
+
+
+/* ============================================================
+   OTHER INPUT PLACEHOLDER
+============================================================ */
+
+#booking-portal input::placeholder,
+#booking-portal textarea::placeholder {
+    color: #858790 !important;
+
+    opacity: 1 !important;
+}
+
+
+/* ============================================================
+   INPUT HOVER
+============================================================ */
+
+#booking-portal input:hover,
+#booking-portal select:hover,
+#booking-portal textarea:hover {
+    border-color:
+        rgba(214,168,95,.55) !important;
+}
+
+
+/* ============================================================
+   INPUT FOCUS
+============================================================ */
+
+#booking-portal input:focus,
+#booking-portal select:focus,
+#booking-portal textarea:focus {
+    background-color: #292A30 !important;
+
+    background: #292A30 !important;
+
+    color: #FFFFFF !important;
+
+    border-color: #D6A85F !important;
+
+    outline: none !important;
+
+    box-shadow:
+        0 0 0 3px rgba(214,168,95,.12) !important;
+}
+
+
+/* ============================================================
+   DROPDOWN OPTIONS
+============================================================ */
+
+#booking-portal option {
+    background: #24252B !important;
+    color: #FFFFFF !important;
+}
+
+
+/* ============================================================
+   DATE INPUT
+============================================================ */
+
+#booking-portal input[type="date"] {
+    color: #FFFFFF !important;
+    color-scheme: dark;
+}
+
+
+/* ============================================================
+   OPD SLIP
+   WHITE CARD -> CHARCOAL
+============================================================ */
+
+#booking-portal .bg-white {
+    background:
+        linear-gradient(
+            145deg,
+            #292A30,
+            #202126
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border: 1px solid rgba(255,255,255,.10) !important;
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.32) !important;
+}
+
+
+/* OPD Slip Heading */
+
+#booking-portal .bg-white h3,
+#booking-portal .bg-white h4,
+#booking-portal .bg-white h5 {
+    color: #FFFFFF !important;
+}
+
+
+/* OPD Slip Text */
+
+#booking-portal .bg-white p {
+    color: #AEB0B8 !important;
+}
+
+
+/* OPD Slip Divider */
+
+#booking-portal .bg-white hr {
+    border-color:
+        rgba(255,255,255,.09) !important;
+}
+
+
+/* ============================================================
+   WHITE TRANSPARENT BOXES
+============================================================ */
+
+#booking-portal .bg-white\/95,
+#booking-portal .bg-white\/90,
+#booking-portal .bg-white\/80 {
+    background:
+        rgba(35,36,42,.96) !important;
+}
+
+
+/* ============================================================
+   LIGHT GREY BOXES
+============================================================ */
+
+#booking-portal .bg-slate-50,
+#booking-portal .bg-gray-50,
+#booking-portal .bg-zinc-50 {
+    background: #23242A !important;
+
+    color: #E5E5E8 !important;
+
+    border-color:
+        rgba(255,255,255,.08) !important;
+}
+
+
+/* ============================================================
+   BLUE INFORMATION BOX
+============================================================ */
+
+#booking-portal .bg-blue-50 {
+    background:
+        rgba(181,47,75,.12) !important;
+
+    color: #E05A72 !important;
+
+    border-color:
+        rgba(181,47,75,.22) !important;
+}
+
+
+/* ============================================================
+   READY BADGE
+============================================================ */
+
+#booking-portal .bg-green-100,
+#booking-portal .bg-emerald-100 {
+    background:
+        rgba(52,190,140,.14) !important;
+
+    color: #5FE0AF !important;
+
+    border:
+        1px solid rgba(95,224,175,.18) !important;
+}
+
+
+/* ============================================================
+   CONFIRM & GENERATE TOKEN BUTTON
+============================================================ */
+
+#booking-portal button.bg-blue-600,
+#booking-portal .bg-blue-600 {
+    background:
+        linear-gradient(
+            135deg,
+            #C23855,
+            #94233E
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border:
+        1px solid rgba(255,255,255,.08) !important;
+
+    box-shadow:
+        0 12px 28px rgba(181,47,75,.25) !important;
+
+    transition:
+        all .25s ease !important;
+}
+
+
+#booking-portal button.bg-blue-600:hover,
+#booking-portal .bg-blue-600:hover {
+    background:
+        linear-gradient(
+            135deg,
+            #D04460,
+            #A52A46
+        ) !important;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 16px 34px rgba(181,47,75,.35) !important;
+}
+
+
+/* ============================================================
+   RED / WINE TEXT
+============================================================ */
+
+#booking-portal .text-red-500,
+#booking-portal .text-red-600,
+#booking-portal .text-rose-500,
+#booking-portal .text-rose-600 {
+    color: #E05A72 !important;
+}
+
+#booking-portal .text-blue-600 {
+    color: #DF6A80 !important;
+}
+
+#booking-portal .text-blue-700 {
+    color: #E17B8E !important;
+}
+
+
+/* ============================================================
+   RED BUTTONS
+============================================================ */
+
+#booking-portal .bg-red-600,
+#booking-portal .bg-rose-600 {
+    background:
+        linear-gradient(
+            135deg,
+            #B52F4B,
+            #8E203A
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    box-shadow:
+        0 12px 30px rgba(181,47,75,.20) !important;
+}
+
+
+/* ============================================================
+   DARK BUTTONS
+============================================================ */
+
+#booking-portal .bg-slate-900,
+#booking-portal .bg-gray-900 {
+    background: #111318 !important;
+
+    color: #FFFFFF !important;
+}
+
+#booking-portal .bg-slate-900:hover,
+#booking-portal .bg-gray-900:hover {
+    background: #B52F4B !important;
+}
+
+
+/* ============================================================
+   TABLE
+============================================================ */
+
+#booking-portal table {
+    color: #DCE7F2 !important;
+}
+
+#booking-portal table thead {
+    background: #17181D !important;
+
+    color: #FFFFFF !important;
+}
+
+#booking-portal table tbody tr {
+    background: transparent !important;
+
+    border-color:
+        rgba(255,255,255,.07) !important;
+
+    transition:
+        background .2s ease;
+}
+
+#booking-portal table tbody tr:hover {
+    background:
+        rgba(181,47,75,.08) !important;
+}
+
+
+/* ============================================================
+   TEXT COLORS
+============================================================ */
+
+#booking-portal .text-slate-500,
+#booking-portal .text-slate-400 {
+    color: #8F929B !important;
+}
+
+#booking-portal .text-slate-700,
+#booking-portal .text-slate-800 {
+    color: #E9E9EB !important;
+}
+
+#booking-portal .text-yellow-500,
+#booking-portal .text-amber-500 {
+    color: #D6A85F !important;
+}
+
+
+/* ============================================================
+   BORDERS
+============================================================ */
+
+#booking-portal .border-slate-200,
+#booking-portal .border-slate-100,
+#booking-portal .border-gray-200 {
+    border-color:
+        rgba(255,255,255,.09) !important;
+}
+
+
+/* ============================================================
+   BUTTON ANIMATION
+============================================================ */
+
+#booking-portal button {
+    transition:
+        all .25s ease;
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@@media (max-width: 768px) {
+
+    #booking-portal {
+        background:
+            linear-gradient(
+                180deg,
+                #15161A,
+                #111216
+            ) !important;
+    }
+
+    #booking-portal .bg-white {
+        background: #24252B !important;
+    }
+
+    #booking-portal input,
+    #booking-portal select,
+    #booking-portal textarea {
+        background-color: #292A30 !important;
+
+        background: #292A30 !important;
+
+        color: #FFFFFF !important;
+    }
+
+    #booking-portal #patientName,
+    #booking-portal #patientPhone {
+        background-color: #303136 !important;
+
+        background:
+            linear-gradient(
+                145deg,
+                #303136,
+                #28292F
+            ) !important;
+
+        color: #FFFFFF !important;
+    }
+}
+/* Patient Name + Phone - Charcoal Autofill Fix */
+#booking-portal #patientName,
+#booking-portal #patientPhone,
+#booking-portal #patientName:active,
+#booking-portal #patientPhone:active,
+#booking-portal #patientName:focus,
+#booking-portal #patientPhone:focus,
+#booking-portal #patientName:-webkit-autofill,
+#booking-portal #patientPhone:-webkit-autofill,
+#booking-portal #patientName:-webkit-autofill:hover,
+#booking-portal #patientPhone:-webkit-autofill:hover,
+#booking-portal #patientName:-webkit-autofill:focus,
+#booking-portal #patientPhone:-webkit-autofill:focus {
+    background: #303136 !important;
+    background-color: #303136 !important;
+    background-image: none !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    caret-color: #FFFFFF !important;
+    border: 1px solid #4B4C53 !important;
+    box-shadow: 0 0 0 1000px #303136 inset !important;
+    -webkit-box-shadow: 0 0 0 1000px #303136 inset !important;
+}
+
+#booking-portal #patientName:focus,
+#booking-portal #patientPhone:focus {
+    background: #303136 !important;
+    background-color: #303136 !important;
+    border-color: #D6A85F !important;
+    outline: none !important;
+    box-shadow:
+        0 0 0 3px rgba(214,168,95,.12),
+        0 0 0 1000px #303136 inset !important;
+    -webkit-box-shadow:
+        0 0 0 3px rgba(214,168,95,.12),
+        0 0 0 1000px #303136 inset !important;
+}
+```css
+/* =========================================
+   HEALTHCARE LOGIN - CHARCOAL RED THEME
+   ========================================= */
+
+/* Email, Password and Role fields */
+#loginModal input:not([type="hidden"]):not([type="checkbox"]),
+#loginModal select,
+#loginModal textarea {
+    background: #0b2340 !important;
+    color: #f8fafc !important;
+    border: 1px solid #304966 !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    transition: border-color .2s ease,
+                box-shadow .2s ease,
+                background .2s ease !important;
+}
+
+/* Red shadow for all fields */
+#loginModal input:not([type="hidden"]):not([type="checkbox"]):focus,
+#loginModal select:focus,
+#loginModal textarea:focus {
+    background: #0d2542 !important;
+    color: #ffffff !important;
+    border: 1px solid #ef4765 !important;
+    box-shadow:
+        0 0 0 2px rgba(239, 71, 101, 0.20),
+        0 0 14px rgba(190, 35, 65, 0.22) !important;
+}
+
+/* Placeholder color */
+#loginModal input::placeholder,
+#loginModal textarea::placeholder {
+    color: #91a5bf !important;
+    opacity: 1 !important;
+}
+
+/* Browser autofill background fix */
+#loginModal input:-webkit-autofill,
+#loginModal input:-webkit-autofill:hover,
+#loginModal input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f8fafc !important;
+    caret-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0 1000px #0b2340 inset !important;
+    box-shadow: 0 0 0 1000px #0b2340 inset !important;
+    border: 1px solid #304966 !important;
+}
+
+/* Role dropdown */
+#loginModal select {
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+/* Role list options */
+#loginModal select option {
+    background: #17202b !important;
+    color: #ffffff !important;
+}
+
+/* Selected role */
+#loginModal select option:checked {
+    background: #a82440 !important;
+    color: #ffffff !important;
+}
+
+/* Red focus border similar to screenshot */
+#loginModal select:focus-visible {
+    outline: 1px solid #ff637d !important;
+    outline-offset: 2px;
+}
+
+/* Create New Account - charcoal red */
+#loginModal a[href*="Register"] {
+    background: linear-gradient(
+        135deg,
+        #29252c 0%,
+        #45202b 48%,
+        #701d32 100%
+    ) !important;
+
+    color: #fff1f3 !important;
+    border: 1px solid #9e3a50 !important;
+    border-radius: 12px !important;
+
+    box-shadow:
+        0 5px 15px rgba(91, 19, 39, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+
+    transition: all .22s ease !important;
+}
+
+/* Create Account hover */
+#loginModal a[href*="Register"]:hover {
+    background: linear-gradient(
+        135deg,
+        #393039 0%,
+        #642335 50%,
+        #922841 100%
+    ) !important;
+
+    color: #ffffff !important;
+    border-color: #e15a73 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(225, 90, 115, 0.12),
+        0 7px 20px rgba(145, 28, 57, 0.30) !important;
+
+    transform: translateY(-1px);
+}
+
+/* Create Account keyboard focus */
+#loginModal a[href*="Register"]:focus-visible {
+    outline: 2px solid #ff7188 !important;
+    outline-offset: 3px;
+}
+
+/* Keep the secure sign-in button red */
+#loginModal button[type="submit"] {
+    background: linear-gradient(
+        135deg,
+        #b52d4d,
+        #821b36
+    ) !important;
+
+    color: #ffffff !important;
+    border: 1px solid #c43b59 !important;
+    border-radius: 12px !important;
+}
+
+#loginModal button[type="submit"]:hover {
+    background: linear-gradient(
+        135deg,
+        #ca3858,
+        #982440
+    ) !important;
+
+    box-shadow: 0 5px 16px rgba(190, 35, 65, 0.25) !important;
+}
+```
+```css
+/* ===== CHARCOAL RED INPUT THEME ===== */
+
+#loginModal input:not([type="hidden"]):not([type="checkbox"]),
+#loginModal select,
+#loginModal textarea {
+    background-color: #101c2b !important;
+    color: #f5f0f2 !important;
+    border: 1px solid #713044 !important;
+    border-radius: 12px !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+/* Email/password autofill: remove white background */
+#loginModal input:-webkit-autofill,
+#loginModal input:-webkit-autofill:hover,
+#loginModal input:-webkit-autofill:focus,
+#loginModal input:-webkit-autofill:active {
+    -webkit-text-fill-color: #f5f0f2 !important;
+    caret-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0 1000px #101c2b inset !important;
+    box-shadow: 0 0 0 1000px #101c2b inset !important;
+    border: 1px solid #713044 !important;
+}
+
+/* Placeholder */
+#loginModal input::placeholder,
+#loginModal textarea::placeholder {
+    color: #9ca9ba !important;
+    opacity: 1 !important;
+}
+
+/* Red-charcoal border glow on focus */
+#loginModal input:focus,
+#loginModal select:focus,
+#loginModal textarea:focus {
+    border-color: #d44868 !important;
+    box-shadow: 0 0 0 2px rgba(212, 72, 104, .18) !important;
+}
+
+/* Role dropdown */
+#loginModal select {
+    background: #25212a !important;
+    color: #fff0f3 !important;
+    border: 1px solid #a33a54 !important;
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+/* Role dropdown options */
+#loginModal select option {
+    background-color: #25212a !important;
+    color: #fff0f3 !important;
+}
+
+/* Selected role */
+#loginModal select option:checked {
+    background-color: #8d243e !important;
+    color: #ffffff !important;
+}
+
+/* Role hover/focus border */
+#loginModal select:hover,
+#loginModal select:focus {
+    border-color: #e05a76 !important;
+    box-shadow: 0 0 0 2px rgba(212, 72, 104, .18) !important;
+}
+```
+
+</style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- ================= CLEAN MODERN NAVBAR ================= -->
+    <header class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] z-40">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="flex justify-between items-center h-20">
+
+                <!-- Brand Logo -->
+                <a href="/Home/Index" class="flex items-center gap-3.5 group">
+
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-700 to-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 group-hover:scale-[1.03] transition-all duration-200">
+
+                        <i data-lucide="shield-plus"
+                           class="w-6 h-6 stroke-[2.2]"></i>
+
+                    </div>
+
+                    <div class="flex flex-col">
+
+                        <span class="text-xl font-extrabold text-blue-600 tracking-tight leading-none group-hover:text-blue-700 transition">
+                            HealthCare
+                        </span>
+
+                        <span class="text-[9.5px] tracking-[0.22em] uppercase font-bold text-slate-400 mt-1">
+                            Management System
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- Desktop Navigation Items -->
+                <nav class="hidden md:flex items-center gap-1 lg:gap-1.5 font-medium">
+
+                    <a href="/Home/Index"
+                       class="px-3.5 py-2 text-sm text-blue-600 font-bold rounded-lg hover:bg-blue-50/70 transition">
+                        Home
+                    </a>
+
+
+                    <!-- Departments Dropdown -->
+                    <div class="relative group">
+
+                        <button type="button"
+                                class="flex items-center gap-1.5 px-3.5 py-2 text-sm text-slate-700 font-semibold rounded-lg hover:text-blue-600 hover:bg-slate-100/70 transition">
+
+                            <span>Departments</span>
+
+                            <i data-lucide="chevron-down"
+                               class="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:rotate-180">
+                            </i>
+
+                        </button>
+
+
+                        <div class="absolute left-0 top-full hidden group-hover:block w-72 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50">
+
+                            <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                                12 Specialized Departments
+                            </div>
+
+                            <ul class="py-1 text-sm font-medium text-slate-700 max-h-96 overflow-y-auto">
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Cardiology')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Cardiology</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('ENT')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>ENT</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Neurosurgery')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Neurosurgery</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Urology')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Urology</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Gynaecology')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Gynaecology</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Orthopaedic')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Orthopaedic</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Ophthalmology')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Ophthalmology</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Plastic Surgery')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Plastic Surgery</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Gastroenterology')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Gastroenterology</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Nephrology')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Nephrology</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('Surgical Oncology')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>Surgical Oncology</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#departments-section"
+                                       onclick="filterDepartment('General Surgery')"
+                                       class="flex items-center justify-between px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+
+                                        <span>General Surgery</span>
+
+                                        <i data-lucide="chevron-right"
+                                           class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Treatments -->
+                    <div class="relative group">
+
+                        <button type="button"
+                                onclick="toggleTreatmentsMegaMenu()"
+                                class="flex items-center gap-1.5 px-3.5 py-2 text-sm text-slate-700 font-semibold rounded-lg hover:text-blue-600 hover:bg-slate-100/70 transition">
+
+                            <span>Treatments</span>
+
+                            <i data-lucide="chevron-down"
+                               class="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:rotate-180">
+                            </i>
+
+                        </button>
+
+                    </div>
+
+
+                    <a href="#services-section"
+                       class="px-3.5 py-2 text-sm text-slate-700 font-semibold rounded-lg hover:text-blue-600 hover:bg-slate-100/70 transition">
+                        Services
+                    </a>
+
+                    <a href="#contact-section"
+                       class="px-3.5 py-2 text-sm text-slate-700 font-semibold rounded-lg hover:text-blue-600 hover:bg-slate-100/70 transition">
+                        Contact
+                    </a>
+
+                </nav>
+
+
+                <!-- ================================================= -->
+                <!-- RIGHT NAVBAR - AUTHENTICATED / GUEST -->
+                <!-- ================================================= -->
+
+                <div class="flex items-center gap-3">
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        string dashboardUrl = "/Home/Index";
+
+                        if (User.IsInRole("Administrator") ||
+                        User.IsInRole("Admin"))
+                        {
+                            dashboardUrl = "/Admin/Dashboard";
+                        }
+                        else if (User.IsInRole("Doctor"))
+                        {
+                            dashboardUrl = "/Doctor/Dashboard";
+                        }
+                        else if (User.IsInRole("Patient"))
+                        {
+                            dashboardUrl = "/Patient/Dashboard";
+                        }
+                        else if (User.IsInRole("Receptionist"))
+                        {
+                            dashboardUrl = "/Receptionist/Dashboard";
+                        }
+                        else if (User.IsInRole("Laboratory"))
+                        {
+                            dashboardUrl = "/Laboratory/Dashboard";
+                        }
+
+                        <!-- Dashboard -->
+                        <a href="@dashboardUrl"
+                           class="hidden sm:inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/25 hover:-translate-y-0.5 transition">
+
+                            <i data-lucide="layout-dashboard"
+                               class="w-4 h-4"></i>
+
+                            Dashboard
+
+                        </a>
+
+
+                        <!-- Logout -->
+                        <form action="/Account/Logout"
+                              method="post"
+                              class="hidden sm:block">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border border-red-200 text-red-600 hover:bg-red-50 transition">
+
+                                <i data-lucide="log-out"
+                                   class="w-4 h-4"></i>
+
+                                Logout
+
+                            </button>
+
+                        </form>
+                    }
+                    else
+                    {
+                        <!-- Guest Get Started -->
+                        <button type="button"
+                                onclick="scrollToSection('booking-portal')"
+                                class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/25 hover:-translate-y-0.5 active:translate-y-0 transition duration-150">
+
+                            Get Started
+
+                        </button>
+
+
+                        <!-- Guest Login -->
+                        <button type="button"
+                                onclick="openLoginModal()"
+                                class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold border border-slate-300 hover:border-slate-400 text-slate-700 hover:bg-slate-100/80 transition">
+
+                            Login
+
+                        </button>
+                    }
+
+
+                    <!-- Mobile Menu -->
+                    <button type="button"
+                            onclick="toggleMobileNav()"
+                            class="md:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Mobile Nav Drawer -->
+        <div id="mobileNav"
+             class="hidden md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2">
+
+            <a href="/Home/Index"
+               class="block px-3 py-2 text-sm font-semibold text-blue-600 rounded-lg bg-blue-50">
+                Home
+            </a>
+
+            <a href="#departments-section"
+               class="block px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Departments
+            </a>
+
+            <button type="button"
+                    onclick="toggleTreatmentsMegaMenu()"
+                    class="w-full text-left px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 flex justify-between items-center">
+
+                <span>Treatments</span>
+
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+
+            </button>
+
+            <a href="#services-section"
+               class="block px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Services
+            </a>
+
+            <a href="#contact-section"
+               class="block px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Contact
+            </a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="pt-2 space-y-2">
+
+                    @{
+                        string mobileDashboardUrl = "/Home/Index";
+
+                        if (User.IsInRole("Administrator") ||
+                        User.IsInRole("Admin"))
+                        {
+                            mobileDashboardUrl = "/Admin/Dashboard";
+                        }
+                        else if (User.IsInRole("Doctor"))
+                        {
+                            mobileDashboardUrl = "/Doctor/Dashboard";
+                        }
+                        else if (User.IsInRole("Patient"))
+                        {
+                            mobileDashboardUrl = "/Patient/Dashboard";
+                        }
+                        else if (User.IsInRole("Receptionist"))
+                        {
+                            mobileDashboardUrl = "/Receptionist/Dashboard";
+                        }
+                        else if (User.IsInRole("Laboratory"))
+                        {
+                            mobileDashboardUrl = "/Laboratory/Dashboard";
+                        }
+                    }
+
+                    <a href="@mobileDashboardUrl"
+                       class="block w-full py-2.5 rounded-lg text-sm font-bold bg-blue-600 text-white text-center">
+
+                        Dashboard
+
+                    </a>
+
+                    <form action="/Account/Logout"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="w-full py-2.5 rounded-lg text-sm font-bold border border-red-200 text-red-600 hover:bg-red-50">
+
+                            Logout
+
+                        </button>
+
+                    </form>
+
+                </div>
+            }
+            else
+            {
+                <div class="pt-2">
+
+                    <button type="button"
+                            onclick="scrollToSection('booking-portal')"
+                            class="w-full py-2.5 rounded-lg text-sm font-bold bg-blue-600 text-white">
+
+                        Get Started
+
+                    </button>
+
+                </div>
+
+                <button type="button"
+                        onclick="openLoginModal(); toggleMobileNav();"
+                        class="w-full py-2.5 rounded-lg text-sm font-bold border border-slate-300 text-slate-700">
+
+                    Login
+
+                </button>
+            }
+
+        </div>
+
+
+        <!-- Treatments Mega Menu -->
+        <div id="treatmentsMegaMenu"
+             class="hidden bg-white/95 backdrop-blur-md border-t border-b border-slate-200 shadow-2xl py-8 px-6 lg:px-12 transition-all">
+
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+
+                <div>
+
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-blue-900 border-b-2 border-blue-600 pb-2 mb-4">
+                        Our Institutes
+                    </h4>
+
+                    <ul class="space-y-2.5 text-sm text-slate-600 font-medium">
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Cancer Care')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="ribbon"
+                                   class="w-4 h-4 text-blue-500"></i>
+
+                                Cancer Care
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Heart & Vascular Sciences')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="activity"
+                                   class="w-4 h-4 text-rose-500"></i>
+
+                                Heart &amp; Vascular Sciences
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Musculoskeletal Sciences & Orthopaedics')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="bone"
+                                   class="w-4 h-4 text-amber-500"></i>
+
+                                Musculoskeletal &amp; Orthopaedics
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Minimal Access & Laparoscopic Surgery')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="scissors"
+                                   class="w-4 h-4 text-indigo-500"></i>
+
+                                Minimal Access Surgery
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Neurosciences')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="brain"
+                                   class="w-4 h-4 text-purple-500"></i>
+
+                                Neurosciences
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Robotic Surgery')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="bot"
+                                   class="w-4 h-4 text-cyan-500"></i>
+
+                                Robotic Surgery
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div>
+
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-blue-900 border-b-2 border-blue-600 pb-2 mb-4">
+                        Conditions &amp; Treatments
+                    </h4>
+
+                    <ul class="space-y-2.5 text-sm text-slate-600 font-medium">
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Arthritis Care')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="chevron-right"
+                                   class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                Arthritis Care
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Back Pain Spine Therapy')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="chevron-right"
+                                   class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                Back Pain &amp; Spine Therapy
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Cervical Spondylosis')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="chevron-right"
+                                   class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                Cervical Spondylosis
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Disc Diseases')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="chevron-right"
+                                   class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                Disc Diseases
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Osteoporosis Treatment')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="chevron-right"
+                                   class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                Osteoporosis Treatment
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Spinal Fractures & Paralysis')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="chevron-right"
+                                   class="w-3.5 h-3.5 text-slate-400"></i>
+
+                                Spinal Fractures
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div>
+
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-blue-900 border-b-2 border-blue-600 pb-2 mb-4">
+                        Key Procedures
+                    </h4>
+
+                    <ul class="space-y-2.5 text-sm text-slate-600 font-medium">
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('CABG (Coronary Artery Bypass)')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="check-circle"
+                                   class="w-3.5 h-3.5 text-emerald-500"></i>
+
+                                Coronary Bypass (CABG)
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Kidney Transplant')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="check-circle"
+                                   class="w-3.5 h-3.5 text-emerald-500"></i>
+
+                                Kidney Transplant
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('CAR T-Cell Therapy')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="check-circle"
+                                   class="w-3.5 h-3.5 text-emerald-500"></i>
+
+                                CAR T-Cell Therapy
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Brain Tumour Surgery')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="check-circle"
+                                   class="w-3.5 h-3.5 text-emerald-500"></i>
+
+                                Brain Tumour Surgery
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="openTreatmentModal('Laparoscopic Cholecystectomy')"
+                               class="hover:text-blue-600 flex items-center gap-2">
+
+                                <i data-lucide="check-circle"
+                                   class="w-3.5 h-3.5 text-emerald-500"></i>
+
+                                Laparoscopic Surgery
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div class="bg-gradient-to-br from-blue-50/80 to-slate-50 p-5 rounded-2xl border border-blue-100/80">
+
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-blue-950 mb-2">
+                        Clinical Excellence
+                    </h4>
+
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Equipped with 3T MRI, Da Vinci Robotic Surgical Systems, and high-precision linear accelerators for zero-error therapy.
+                    </p>
+
+                    <div class="border-t border-blue-100 pt-3">
+
+                        <span class="text-xs font-bold text-blue-700 block mb-1">
+                            Over 45,000+ Treated
+                        </span>
+
+                        <p class="text-[11px] text-slate-500 mb-3">
+                            Certified patient safety standards across all 12 key hospital departments.
+                        </p>
+
+                        <button type="button"
+                                onclick="toggleTreatmentsMegaMenu()"
+                                class="w-full text-xs font-semibold py-2 px-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+
+                            Close Menu
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="relative bg-white pt-16 pb-24 lg:pt-24 lg:pb-32 overflow-hidden">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+                <div class="lg:col-span-7 space-y-6">
+
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600 text-white text-xs font-semibold tracking-wide shadow-sm">
+
+                        <span>Smart Healthcare Platform</span>
+
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+
+                        Complete Healthcare<br class="hidden sm:inline" />
+
+                        Management System
+
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-600 max-w-xl font-normal leading-relaxed">
+
+                        Manage patients, doctors, appointments, medical records and billing in one secure platform.
+
+                    </p>
+
+                    <div class="flex items-center gap-4 pt-2">
+
+                        <button type="button"
+                                onclick="scrollToSection('booking-portal')"
+                                class="px-6 py-3 rounded-xl text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20 hover:shadow-blue-500/35 transition">
+
+                            Get Started
+
+                        </button>
+
+                        @if (User.Identity?.IsAuthenticated != true)
+                        {
+                            <button type="button"
+                                    onclick="openLoginModal()"
+                                    class="px-6 py-3 rounded-xl text-sm font-semibold border border-slate-300 text-slate-700 hover:bg-slate-100 transition">
+
+                                Login
+
+                            </button>
+                        }
+                        else
+                        {
+                            string heroDashboardUrl = "/Home/Index";
+
+                            if (User.IsInRole("Administrator") ||
+                            User.IsInRole("Admin"))
+                            {
+                                heroDashboardUrl = "/Admin/Dashboard";
+                            }
+                            else if (User.IsInRole("Doctor"))
+                            {
+                                heroDashboardUrl = "/Doctor/Dashboard";
+                            }
+                            else if (User.IsInRole("Patient"))
+                            {
+                                heroDashboardUrl = "/Patient/Dashboard";
+                            }
+                            else if (User.IsInRole("Receptionist"))
+                            {
+                                heroDashboardUrl = "/Receptionist/Dashboard";
+                            }
+                            else if (User.IsInRole("Laboratory"))
+                            {
+                                heroDashboardUrl = "/Laboratory/Dashboard";
+                            }
+
+                            <a href="@heroDashboardUrl"
+                               class="px-6 py-3 rounded-xl text-sm font-semibold border border-blue-300 text-blue-600 hover:bg-blue-50 transition">
+
+                                Go To Dashboard
+
+                            </a>
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <div class="lg:col-span-5 flex justify-center items-center">
+
+                    <div class="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full bg-gradient-to-tr from-blue-600 to-sky-400 flex flex-col items-center justify-center text-white shadow-2xl shadow-blue-500/30 group">
+
+                        <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center heart-pulse mb-2">
+
+                            <i data-lucide="heart"
+                               class="w-9 h-9 fill-white text-white"></i>
+
+                        </div>
+
+                        <svg class="w-48 sm:w-56 h-12 stroke-white fill-none stroke-[3]"
+                             viewBox="0 0 200 50">
+
+                            <path d="M 0 25 L 40 25 L 50 10 L 60 40 L 75 15 L 85 35 L 95 25 L 200 25"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round" />
+
+                        </svg>
+
+                        <span class="text-xs tracking-widest uppercase font-semibold text-blue-100 mt-2">
+
+                            Active Care 24/7
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-16 flex justify-center">
+
+                <a href="#services-section"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 shadow-md shadow-blue-500/20 transition">
+
+                    <span>Our Services</span>
+
+                    <i data-lucide="arrow-down"
+                       class="w-3.5 h-3.5"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= 12 SPECIALIZED DEPARTMENTS ================= -->
+    <section id="departments-section"
+             class="py-20 bg-slate-50 border-t border-slate-200">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-16">
+
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+
+                    Clinical Specialties
+
+                </span>
+
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-3">
+
+                    Essential Medical Departments
+
+                </h2>
+
+                <p class="text-slate-600 text-sm mt-2">
+
+                    Our hospital is equipped with 12 specialized clinical wings led by certified senior consultants.
+
+                </p>
+
+            </div>
+
+            <div id="departmentsContainer"
+                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SERVICES SECTION ================= -->
+    <section id="services-section"
+             class="py-20 bg-white border-t border-slate-200">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-2xl mx-auto mb-16">
+
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+
+                    Complete Care
+
+                </span>
+
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-3">
+
+                    Hospital Facilities &amp; Services
+
+                </h2>
+
+                <p class="text-slate-600 text-sm mt-2">
+
+                    Integrated clinical services providing comprehensive outpatient, inpatient, and diagnostic solutions.
+
+                </p>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-400 transition hover:shadow-lg">
+
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-5">
+
+                        <i data-lucide="microscope"
+                           class="w-6 h-6"></i>
+
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">
+
+                        Automated Laboratory &amp; Diagnostics
+
+                    </h3>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+
+                        24/7 pathology, CT scan, digital X-Ray, ultrasound, and blood gas laboratory with digital report dispatch.
+
+                    </p>
+
+                </div>
+
+
+                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-400 transition hover:shadow-lg">
+
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-5">
+
+                        <i data-lucide="ambulance"
+                           class="w-6 h-6"></i>
+
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">
+
+                        24x7 Ambulance &amp; Emergency ICU
+
+                    </h3>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+
+                        Advanced life-support mobile ICU units equipped with oxygen cylinders, ventilators, and emergency response teams.
+
+                    </p>
+
+                </div>
+
+
+                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-400 transition hover:shadow-lg">
+
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-5">
+
+                        <i data-lucide="shield-check"
+                           class="w-6 h-6"></i>
+
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">
+
+                        Cashless Insurance &amp; TPA Desk
+
+                    </h3>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+
+                        Instant claim approvals with all major insurance providers, government healthcare schemes, and corporate health cards.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= BOOKING PORTAL ================= -->
+    <section id="booking-portal"
+             class="py-20 bg-slate-100 border-t border-slate-200">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12">
+
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+
+                    Interactive System
+
+                </span>
+
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-2">
+
+                    Healthcare Management Dashboard
+
+                </h2>
+
+                <p class="text-slate-600 text-sm mt-1">
+
+                    Live working module corresponding to your project's MVC controllers (Patient, Doctor, Receptionist, Admin).
+
+                </p>
+
+            </div>
+
+
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+
+                <div class="bg-slate-900 px-6 py-4 flex flex-wrap gap-2 items-center justify-between border-b border-slate-800">
+
+                    <div class="flex items-center gap-2 text-white text-xs font-mono">
+
+                        <i data-lucide="folder-git-2"
+                           class="w-4 h-4 text-emerald-400">
+                        </i>
+
+                        <span>HealthcareManagementSystem.sln</span>
+
+                    </div>
+
+
+                    <div class="flex flex-wrap gap-1 bg-slate-800 p-1 rounded-xl">
+
+                        <button type="button"
+                                onclick="switchTab('tab-book')"
+                                id="btn-tab-book"
+                                class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white transition">
+
+                            Book Appointment
+
+                        </button>
+
+                        <button type="button"
+                                onclick="switchTab('tab-queue')"
+                                id="btn-tab-queue"
+                                class="px-3.5 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:text-white transition">
+
+                            OPD Live Queue
+
+                        </button>
+
+                        <button type="button"
+                                onclick="switchTab('tab-roles')"
+                                id="btn-tab-roles"
+                                class="px-3.5 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:text-white transition">
+
+                            MVC Controllers
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-6 sm:p-10">
+
+                    <!-- TAB 1 -->
+                    <div id="tab-book" class="block">
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                            <div class="lg:col-span-7">
+
+                                <h3 class="text-xl font-bold text-slate-900 mb-2">
+
+                                    Patient Appointment Registration
+
+                                </h3>
+
+                                <p class="text-xs text-slate-500 mb-6">
+
+                                    Enter patient credentials to generate an instant OPD consult token with the assigned specialist.
+
+                                </p>
+
+
+                                <form id="appointmentForm"
+                                      onsubmit="handleBooking(event)"
+                                      class="space-y-4">
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                                        <div>
+
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+
+                                                Patient Full Name
+
+                                            </label>
+
+                                            <input type="text"
+                                                   id="patientName"
+                                                   required
+                                                   placeholder="e.g. Rahul Sharma"
+                                                   class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+
+                                                Contact Phone
+
+                                            </label>
+
+                                            <input type="tel"
+                                                   id="patientPhone"
+                                                   required
+                                                   pattern="[0-9]{10}"
+                                                   maxlength="10"
+                                                   placeholder="10-digit mobile number"
+                                                   class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                                        <div>
+
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+
+                                                Select Department
+
+                                            </label>
+
+                                            <select id="departmentSelect"
+                                                    onchange="updateDoctorsList()"
+                                                    required
+                                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+
+                                                <option value="">
+                                                    -- Choose Department --
+                                                </option>
+
+                                                <option value="Cardiology">Cardiology</option>
+                                                <option value="ENT">ENT</option>
+                                                <option value="Neurosurgery">Neurosurgery</option>
+                                                <option value="Urology">Urology</option>
+                                                <option value="Gynaecology">Gynaecology</option>
+                                                <option value="Orthopaedic">Orthopaedic</option>
+                                                <option value="Ophthalmology">Ophthalmology</option>
+                                                <option value="Plastic Surgery">Plastic Surgery</option>
+                                                <option value="Gastroenterology">Gastroenterology</option>
+                                                <option value="Nephrology">Nephrology</option>
+                                                <option value="Surgical Oncology">Surgical Oncology</option>
+                                                <option value="General Surgery">General Surgery</option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+
+                                                Consulting Doctor
+
+                                            </label>
+
+                                            <select id="doctorSelect"
+                                                    required
+                                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+
+                                                <option value="">
+                                                    -- Select Department First --
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                                        <div>
+
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+
+                                                Appointment Date
+
+                                            </label>
+
+                                            <input type="date"
+                                                   id="appointmentDate"
+                                                   required
+                                                   class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+
+                                                Preferred Slot
+
+                                            </label>
+
+                                            <select id="timeSlot"
+                                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+
+                                                <option>
+                                                    Morning (09:00 AM - 12:00 PM)
+                                                </option>
+
+                                                <option>
+                                                    Afternoon (01:00 PM - 04:00 PM)
+                                                </option>
+
+                                                <option>
+                                                    Evening (05:00 PM - 08:00 PM)
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <button type="submit"
+                                            class="w-full mt-2 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2">
+
+                                        <i data-lucide="check-circle-2"
+                                           class="w-4 h-4">
+                                        </i>
+
+                                        <span>Confirm &amp; Generate Token</span>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+
+                            <!-- Live OPD Slip -->
+                            <div class="lg:col-span-5 bg-slate-50 border border-slate-200 rounded-2xl p-6">
+
+                                <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+
+                                    <span class="text-xs font-bold text-slate-500 uppercase">
+
+                                        Live OPD Slip
+
+                                    </span>
+
+                                    <span id="ticketBadge"
+                                          class="text-xs font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">
+
+                                        READY
+
+                                    </span>
+
+                                </div>
+
+
+                                <div id="ticketContent"
+                                     class="space-y-3 text-sm">
+
+                                    <div class="text-center py-6 text-slate-400">
+
+                                        <i data-lucide="ticket"
+                                           class="w-12 h-12 mx-auto stroke-1 mb-2">
+                                        </i>
+
+                                        <p class="text-xs">
+
+                                            Fill out the registration form to view generated patient slip &amp; token number.
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TAB 2 -->
+                    <div id="tab-queue" class="hidden">
+
+                        <div class="flex justify-between items-center mb-4">
+
+                            <h3 class="text-lg font-bold text-slate-900">
+
+                                Today's Patient Queue (All 12 Departments)
+
+                            </h3>
+
+                            <span class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-bold">
+
+                                Auto Synchronized
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="overflow-x-auto">
+
+                            <table class="w-full text-left text-sm text-slate-600">
+
+                                <thead class="bg-slate-100 text-xs font-bold text-slate-700 uppercase">
+
+                                    <tr>
+
+                                        <th class="py-3 px-4">Token #</th>
+                                        <th class="py-3 px-4">Patient Name</th>
+                                        <th class="py-3 px-4">Department</th>
+                                        <th class="py-3 px-4">Doctor</th>
+                                        <th class="py-3 px-4">Date</th>
+                                        <th class="py-3 px-4">Status</th>
+                                        <th class="py-3 px-4 text-right">Action</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="queueTableBody"
+                                       class="divide-y divide-slate-100">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TAB 3 -->
+                    <div id="tab-roles" class="hidden">
+
+                        <h3 class="text-lg font-bold text-slate-900 mb-1">
+
+                            ASP.NET MVC Solution Structure
+
+                        </h3>
+
+                        <p class="text-xs text-slate-500 mb-6">
+
+                            Views and Controllers configured inside HealthcareManagementSystem.csproj
+
+                        </p>
+
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+
+                                <span class="text-xs font-mono font-bold text-blue-600">
+
+                                    Controllers/PatientController.cs
+
+                                </span>
+
+                                <p class="text-xs text-slate-600 mt-2">
+
+                                    Handles patient registrations, medical history records, and prescriptions.
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+
+                                <span class="text-xs font-mono font-bold text-emerald-600">
+
+                                    Controllers/DoctorController.cs
+
+                                </span>
+
+                                <p class="text-xs text-slate-600 mt-2">
+
+                                    Manages OPD consulting shifts across 12 clinical specialties and electronic notes.
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="p-4 rounded-xl border border-slate-200 bg-white">
+
+                                <span class="text-xs font-mono font-bold text-purple-600">
+
+                                    Controllers/AdminController.cs
+
+                                </span>
+
+                                <p class="text-xs text-slate-600 mt-2">
+
+                                    Hospital governance, billing, staff assignments, and audit trails.
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CONTACT SECTION ================= -->
+    <section id="contact-section"
+             class="py-16 bg-white border-t border-slate-200">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center sm:text-left">
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+
+                        <i data-lucide="map-pin"
+                           class="w-6 h-6"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5 class="text-sm font-bold text-slate-900">
+
+                            Hospital Location
+
+                        </h5>
+
+                        <p class="text-xs text-slate-500">
+
+                            Main Medical Campus, Healthcare Complex
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+
+                        <i data-lucide="phone"
+                           class="w-6 h-6"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5 class="text-sm font-bold text-slate-900">
+
+                            Emergency &amp; Desk
+
+                        </h5>
+
+                        <p class="text-xs text-slate-500">
+
+                            02622–220089 / +91 926 888 0303
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+
+                        <i data-lucide="mail"
+                           class="w-6 h-6"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5 class="text-sm font-bold text-slate-900">
+
+                            Email Inquiries
+
+                        </h5>
+
+                        <p class="text-xs text-slate-500">
+
+                            contact@healthcaremanagementsystem.org
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-auto">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+
+            <div>
+
+                <p class="font-semibold text-slate-200">
+
+                    Complete Healthcare Management System
+
+                </p>
+
+                <p class="text-slate-500">
+
+                    Integrated Electronic Health Record &amp; OPD Appointment Architecture.
+
+                </p>
+
+            </div>
+
+
+            <div class="flex gap-6 text-slate-400">
+
+                <a href="#departments-section"
+                   class="hover:text-white transition">
+
+                    Departments
+
+                </a>
+
+                <a href="javascript:void(0)"
+                   onclick="toggleTreatmentsMegaMenu()"
+                   class="hover:text-white transition">
+
+                    Treatments
+
+                </a>
+
+                <a href="#services-section"
+                   class="hover:text-white transition">
+
+                    Services
+
+                </a>
+
+                <a href="#booking-portal"
+                   class="hover:text-white transition">
+
+                    Portal
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ================= TREATMENT DETAIL MODAL ================= -->
+    <div id="detailModal"
+         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+
+            <button type="button"
+                    onclick="closeModal('detailModal')"
+                    class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+
+                <i data-lucide="x"
+                   class="w-5 h-5"></i>
+
+            </button>
+
+
+            <div class="flex items-center gap-3 mb-4">
+
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+
+                    <i data-lucide="stethoscope"
+                       class="w-5 h-5"></i>
+
+                </div>
+
+                <div>
+
+                    <h3 id="modalTitle"
+                        class="text-lg font-bold text-slate-900">
+
+                        Treatment Pathway
+
+                    </h3>
+
+                    <span class="text-xs text-blue-600 font-semibold uppercase tracking-wider">
+
+                        Clinical Guidance
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <p id="modalDescription"
+               class="text-sm text-slate-600 leading-relaxed mb-6">
+
+                Detailed description of procedure, clinical pre-requisites, and recovery plan.
+
+            </p>
+
+
+            <div class="flex gap-3">
+
+                <button type="button"
+                        onclick="bookThisTreatment()"
+                        class="flex-1 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700">
+
+                    Book Consultation For This
+
+                </button>
+
+
+                <button type="button"
+                        onclick="closeModal('detailModal')"
+                        class="px-4 py-2.5 border border-slate-200 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-50">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- ================= REAL LOGIN MODAL ====================== -->
+    <!-- ========================================================= -->
+
+    <div id="loginModal"
+         class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden z-[100] flex items-center justify-center p-4">
+
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl relative overflow-hidden">
+
+            <!-- Login Header -->
+            <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 px-6 py-7 text-white">
+
+                <button type="button"
+                        onclick="closeModal('loginModal')"
+                        class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+
+                    <i data-lucide="x"
+                       class="w-5 h-5"></i>
+
+                </button>
+
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center">
+
+                        <i data-lucide="shield-check"
+                           class="w-7 h-7">
+                        </i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3 class="text-xl font-extrabold">
+
+                            System Portal Login
+
+                        </h3>
+
+                        <p class="text-xs text-blue-100 mt-1">
+
+                            Secure Healthcare Management System
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Login Body -->
+            <div class="p-6 sm:p-7">
+
+                <!-- Login Error -->
+                @if (TempData["LoginError"] != null)
+                {
+                    <div class="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+
+                        <i data-lucide="circle-alert"
+                           class="w-5 h-5 text-red-600 shrink-0 mt-0.5">
+                        </i>
+
+                        <div>
+
+                            <p class="text-xs font-bold text-red-700">
+
+                                Login Failed
+
+                            </p>
+
+                            <p class="text-xs text-red-600 mt-1">
+
+                                @TempData["LoginError"]
+
+                            </p>
+
+                        </div>
+
+                    </div>
+                }
+
+
+                <!-- ================================================= -->
+                <!-- HOME PAGE LOGIN FORM -->
+                <!-- ================================================= -->
+
+                <form action="/Account/Login"
+                      method="post"
+                      class="space-y-5">
+
+                    @Html.AntiForgeryToken()
+
+                    <!-- Important: tells controller this login came from Home -->
+                    <input type="hidden"
+                           name="fromHome"
+                           value="true" />
+
+
+                    <!-- Email -->
+                    <div>
+
+                        <label for="loginEmail"
+                               class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">
+
+                            Email Address
+
+                        </label>
+
+
+                        <div class="relative">
+
+                            <i data-lucide="mail"
+                               class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400">
+                            </i>
+
+
+                            <input type="email"
+                                   id="loginEmail"
+                                   name="Email"
+                                   required
+                                   autocomplete="email"
+                                   placeholder="admin@hospital.com"
+                                   value="@TempData["LoginEmail"]"
+                                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-sm text-slate-800 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition" />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+                    <div>
+
+                        <div class="flex items-center justify-between mb-2">
+
+                            <label for="loginPassword"
+                                   class="block text-xs font-bold text-slate-700 uppercase tracking-wide">
+
+                                Password
+
+                            </label>
+
+
+                            <a href="/Account/ForgotPassword"
+                               class="text-xs font-semibold text-blue-600 hover:text-blue-700">
+
+                                Forgot Password?
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="relative">
+
+                            <i data-lucide="lock"
+                               class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400">
+                            </i>
+
+
+                            <input type="password"
+                                   id="loginPassword"
+                                   name="Password"
+                                   required
+                                   autocomplete="current-password"
+                                   placeholder="Enter your password"
+                                   class="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-300 text-sm text-slate-800 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition" />
+
+
+                            <button type="button"
+                                    onclick="toggleLoginPassword()"
+                                    class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600">
+
+                                <i id="loginPasswordIcon"
+                                   data-lucide="eye"
+                                   class="w-4 h-4">
+                                </i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- ROLE SELECTION - ONLY ON HOME LOGIN POPUP -->
+                    <!-- ================================================= -->
+
+                    <div>
+
+                        <label for="loginRole"
+                               class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">
+
+                            Login As
+
+                        </label>
+
+
+                        <div class="relative">
+
+                            <i data-lucide="users"
+                               class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none">
+                            </i>
+
+
+                            <select id="loginRole"
+                                    name="Role"
+                                    required
+                                    class="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 text-sm text-slate-800 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition appearance-none">
+
+                                <option value="">Select your role</option>
+
+                                @if (TempData["LoginRole"]?.ToString() == "Administrator")
+                                {
+                                    <option value="Administrator" selected>
+                                        Administrator
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="Administrator">
+                                        Administrator
+                                    </option>
+                                }
+
+                                @if (TempData["LoginRole"]?.ToString() == "Doctor")
+                                {
+                                    <option value="Doctor" selected>
+                                        Doctor
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="Doctor">
+                                        Doctor
+                                    </option>
+                                }
+
+                                @if (TempData["LoginRole"]?.ToString() == "Patient")
+                                {
+                                    <option value="Patient" selected>
+                                        Patient
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="Patient">
+                                        Patient
+                                    </option>
+                                }
+
+                                @if (TempData["LoginRole"]?.ToString() == "Receptionist")
+                                {
+                                    <option value="Receptionist" selected>
+                                        Receptionist
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="Receptionist">
+                                        Receptionist
+                                    </option>
+                                }
+
+                                @if (TempData["LoginRole"]?.ToString() == "Laboratory")
+                                {
+                                    <option value="Laboratory" selected>
+                                        Laboratory
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="Laboratory">
+                                        Laboratory
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Role Information -->
+                    <div class="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+
+                        <i data-lucide="info"
+                           class="w-4 h-4 text-blue-600 mt-0.5 shrink-0">
+                        </i>
+
+                        <p class="text-[11px] leading-relaxed text-blue-700">
+
+                            Select the role assigned to your account.
+                            The system will verify your selected role before opening your authorized dashboard.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- Sign In -->
+                    <button type="submit"
+                            class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition flex items-center justify-center gap-2">
+
+                        <i data-lucide="log-in"
+                           class="w-4 h-4">
+                        </i>
+
+                        <span>
+                            Sign In Securely
+                        </span>
+
+                    </button>
+
+                </form>
+
+
+                <!-- Divider -->
+                <div class="relative my-6">
+
+                    <div class="absolute inset-0 flex items-center">
+
+                        <div class="w-full border-t border-slate-200"></div>
+
+                    </div>
+
+                    <div class="relative flex justify-center">
+
+                        <span class="bg-white px-3 text-[11px] text-slate-400 font-medium">
+
+                            New to the system?
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Register -->
+                <a href="/Account/Register"
+                   class="w-full py-3 rounded-xl border border-slate-300 text-slate-700 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 font-semibold text-sm transition flex items-center justify-center gap-2">
+
+                    <i data-lucide="user-plus"
+                       class="w-4 h-4">
+                    </i>
+
+                    Create New Account
+
+                </a>
+
+
+                <!-- Security -->
+                <div class="flex justify-center items-center gap-2 mt-5">
+
+                    <i data-lucide="shield"
+                       class="w-3.5 h-3.5 text-emerald-500">
+                    </i>
+
+                    <span class="text-[10px] text-slate-400">
+
+                        Secure authentication powered by ASP.NET Core Identity
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= SCRIPTS ========================= -->
+
+    <script>
+
+        const DEPARTMENTS = [
+
+            {
+                name: "Cardiology",
+                desc: "Heart conditions, angiography, stenting, and coronary care.",
+                icon: "heart-pulse",
+                doctor: "Dr. A. K. Verma (Cardiologist)"
+            },
+
+            {
+                name: "ENT",
+                desc: "Ear, nose, throat diagnostics, sinus endoscopy, and audiology.",
+                icon: "ear",
+                doctor: "Dr. S. Mehra (ENT Specialist)"
+            },
+
+            {
+                name: "Neurosurgery",
+                desc: "Brain stroke, neuro-spine trauma, craniotomy, and neural repair.",
+                icon: "brain",
+                doctor: "Dr. R. Singhania (Neurosurgeon)"
+            },
+
+            {
+                name: "Urology",
+                desc: "Kidney stones, laser prostate surgery, lithotripsy, and bladder care.",
+                icon: "activity",
+                doctor: "Dr. P. Deshmukh (Urologist)"
+            },
+
+            {
+                name: "Gynaecology",
+                desc: "Maternity, high-risk pregnancy, IVF, and minimally invasive surgeries.",
+                icon: "baby",
+                doctor: "Dr. N. Joshi (Obstetrician & Gynaecologist)"
+            },
+
+            {
+                name: "Orthopaedic",
+                desc: "Joint replacement, fracture trauma, arthroscopy, and spine alignment.",
+                icon: "bone",
+                doctor: "Dr. M. Patel (Orthopaedic Surgeon)"
+            },
+
+            {
+                name: "Ophthalmology",
+                desc: "Cataract laser surgery, retina care, glaucoma, and vision correction.",
+                icon: "eye",
+                doctor: "Dr. V. Kapoor (Ophthalmologist)"
+            },
+
+            {
+                name: "Plastic Surgery",
+                desc: "Reconstructive, cosmetic, burn trauma recovery, and microvascular surgery.",
+                icon: "sparkles",
+                doctor: "Dr. T. Roy (Plastic Surgeon)"
+            },
+
+            {
+                name: "Gastroenterology",
+                desc: "Endoscopy, liver health, colonoscopy, and digestive tract disorders.",
+                icon: "utensils",
+                doctor: "Dr. K. Iyer (Gastroenterologist)"
+            },
+
+            {
+                name: "Nephrology",
+                desc: "Hemodialysis, chronic kidney failure therapy, and renal transplants.",
+                icon: "shield",
+                doctor: "Dr. H. Gupta (Nephrologist)"
+            },
+
+            {
+                name: "Surgical Oncology",
+                desc: "Comprehensive tumor excision, biopsy, and multidisciplinary cancer surgery.",
+                icon: "ribbon",
+                doctor: "Dr. S. Nair (Surgical Oncologist)"
+            },
+
+            {
+                name: "General Surgery",
+                desc: "Hernia repair, appendectomy, gallbladder excision, and trauma response.",
+                icon: "scissors",
+                doctor: "Dr. D. Sharma (General Surgeon)"
+            }
+
+        ];
+
+
+        let queueData = [
+
+            {
+                token: "TKN-101",
+                patient: "Vikas Malhotra",
+                dept: "Cardiology",
+                doc: "Dr. A. K. Verma",
+                date: "2026-10-04",
+                status: "Confirmed"
+            },
+
+            {
+                token: "TKN-102",
+                patient: "Sneha Nair",
+                dept: "Orthopaedic",
+                doc: "Dr. M. Patel",
+                date: "2026-10-04",
+                status: "In Waiting"
+            },
+
+            {
+                token: "TKN-103",
+                patient: "Amit Roy",
+                dept: "Gastroenterology",
+                doc: "Dr. K. Iyer",
+                date: "2026-10-05",
+                status: "Confirmed"
+            }
+
+        ];
+
+
+        let currentSelectedTreatment = "";
+
+
+        // =========================================================
+        // DEPARTMENTS
+        // =========================================================
+
+        function renderDepartments() {
+
+            const container =
+                document.getElementById('departmentsContainer');
+
+            if (!container) return;
+
+            container.innerHTML = DEPARTMENTS.map(dept => `
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition group">
+
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition">
+
+                        <i data-lucide="${dept.icon}" class="w-6 h-6"></i>
+
+                    </div>
+
+                    <h3 class="text-base font-bold text-slate-900 mb-1">
+
+                        ${dept.name}
+
+                    </h3>
+
+                    <p class="text-xs text-slate-500 mb-4 line-clamp-2">
+
+                        ${dept.desc}
+
+                    </p>
+
+                    <div class="border-t border-slate-100 pt-3 flex justify-between items-center text-xs">
+
+                        <span class="text-slate-400 font-medium">
+
+                            Head: ${dept.doctor.split('(')[0]}
+
+                        </span>
+
+                        <button type="button"
+                                onclick="filterDepartment('${dept.name}')"
+                                class="text-blue-600 font-bold hover:underline">
+
+                            Consult &rarr;
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+
+        // =========================================================
+        // DOCTOR LIST
+        // =========================================================
+
+        function updateDoctorsList() {
+
+            const deptSelect =
+                document.getElementById('departmentSelect');
+
+            const docSelect =
+                document.getElementById('doctorSelect');
+
+            if (!deptSelect || !docSelect) return;
+
+            const val = deptSelect.value;
+
+            docSelect.innerHTML = '';
+
+            if (!val) {
+
+                docSelect.innerHTML =
+                    '<option value="">-- Select Department First --</option>';
+
+                return;
+            }
+
+            const match =
+                DEPARTMENTS.find(d => d.name === val);
+
+            if (match) {
+
+                docSelect.innerHTML = `
+
+                    <option value="${match.doctor}">
+                        ${match.doctor}
+                    </option>
+
+                    <option value="Senior Registrar (${val})">
+                        Senior Registrar (${val})
+                    </option>
+
+                `;
+
+            }
+
+        }
+
+
+        // =========================================================
+        // FILTER DEPARTMENT
+        // =========================================================
+
+        function filterDepartment(deptName) {
+
+            scrollToSection('booking-portal');
+
+            const deptSelect =
+                document.getElementById('departmentSelect');
+
+            if (!deptSelect) return;
+
+            deptSelect.value = deptName;
+
+            updateDoctorsList();
+
+        }
+
+
+        // =========================================================
+        // TREATMENT MENU
+        // =========================================================
+
+        function toggleTreatmentsMegaMenu() {
+
+            const menu =
+                document.getElementById('treatmentsMegaMenu');
+
+            if (!menu) return;
+
+            menu.classList.toggle('hidden');
+
+        }
+
+
+        // =========================================================
+        // MOBILE NAV
+        // =========================================================
+
+        function toggleMobileNav() {
+
+            const mob =
+                document.getElementById('mobileNav');
+
+            if (!mob) return;
+
+            mob.classList.toggle('hidden');
+
+        }
+
+
+        // =========================================================
+        // TREATMENT MODAL
+        // =========================================================
+
+        function openTreatmentModal(treatmentTitle) {
+
+            currentSelectedTreatment = treatmentTitle;
+
+            const title =
+                document.getElementById('modalTitle');
+
+            const description =
+                document.getElementById('modalDescription');
+
+            const modal =
+                document.getElementById('detailModal');
+
+            if (!title || !description || !modal) return;
+
+            title.innerText = treatmentTitle;
+
+            description.innerText =
+                `Our hospital's multidisciplinary team provides accredited care for "${treatmentTitle}". Includes pre-operative digital evaluations, robotic or minimally invasive pathways, and tailored post-procedure monitoring.`;
+
+            modal.classList.remove('hidden');
+
+            document
+                .getElementById('treatmentsMegaMenu')
+                .classList.add('hidden');
+
+            lucide.createIcons();
+
+        }
+
+
+        // =========================================================
+        // BOOK TREATMENT
+        // =========================================================
+
+        function bookThisTreatment() {
+
+            closeModal('detailModal');
+
+            scrollToSection('booking-portal');
+
+            const t =
+                currentSelectedTreatment.toLowerCase();
+
+            const department =
+                document.getElementById('departmentSelect');
+
+            if (!department) return;
+
+            if (
+                t.includes('cancer') ||
+                t.includes('t-cell')
+            ) {
+
+                department.value = 'Surgical Oncology';
+
+            }
+
+            else if (
+                t.includes('heart') ||
+                t.includes('cabg') ||
+                t.includes('coronary')
+            ) {
+
+                department.value = 'Cardiology';
+
+            }
+
+            else if (
+                t.includes('back') ||
+                t.includes('disc') ||
+                t.includes('spine') ||
+                t.includes('arthritis') ||
+                t.includes('osteoporosis')
+            ) {
+
+                department.value = 'Orthopaedic';
+
+            }
+
+            else if (
+                t.includes('brain') ||
+                t.includes('neuro')
+            ) {
+
+                department.value = 'Neurosurgery';
+
+            }
+
+            else if (t.includes('kidney')) {
+
+                department.value = 'Nephrology';
+
+            }
+
+            else if (t.includes('laparoscopic')) {
+
+                department.value = 'General Surgery';
+
+            }
+
+            else {
+
+                department.value = 'General Surgery';
+
+            }
+
+            updateDoctorsList();
+
+        }
+
+
+        // =========================================================
+        // BOOKING
+        // =========================================================
+
+        function handleBooking(e) {
+
+            e.preventDefault();
+
+            const name =
+                document.getElementById('patientName').value;
+
+            const phone =
+                document.getElementById('patientPhone').value;
+
+            const dept =
+                document.getElementById('departmentSelect').value;
+
+            const doctor =
+                document.getElementById('doctorSelect').value;
+
+            const date =
+                document.getElementById('appointmentDate').value;
+
+            const slot =
+                document.getElementById('timeSlot').value;
+
+
+            const randomToken =
+                "TKN-" +
+                Math.floor(1000 + Math.random() * 9000);
+
+
+            queueData.unshift({
+
+                token: randomToken,
+
+                patient: name,
+
+                dept: dept,
+
+                doc: doctor.split('(')[0],
+
+                date: date,
+
+                status: "Confirmed"
+
+            });
+
+
+            renderQueueTable();
+
+
+            const ticketContent =
+                document.getElementById('ticketContent');
+
+
+            ticketContent.innerHTML = `
+
+                <div class="bg-blue-600 text-white rounded-xl p-4 text-center">
+
+                    <span class="text-xs uppercase tracking-widest text-blue-200">
+
+                        OPD Consultation Token
+
+                    </span>
+
+                    <div class="text-3xl font-extrabold my-1">
+
+                        ${randomToken}
+
+                    </div>
+
+                    <span class="text-xs bg-blue-500/60 px-3 py-1 rounded-full font-medium">
+
+                        ${date} | ${slot}
+
+                    </span>
+
+                </div>
+
+
+                <div class="space-y-2 pt-2 text-xs">
+
+                    <div class="flex justify-between py-1 border-b border-slate-200">
+
+                        <span class="text-slate-500">
+
+                            Patient:
+
+                        </span>
+
+                        <span class="font-bold text-slate-800">
+
+                            ${name} (${phone})
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="flex justify-between py-1 border-b border-slate-200">
+
+                        <span class="text-slate-500">
+
+                            Department:
+
+                        </span>
+
+                        <span class="font-bold text-blue-600">
+
+                            ${dept}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="flex justify-between py-1 border-b border-slate-200">
+
+                        <span class="text-slate-500">
+
+                            Consultant:
+
+                        </span>
+
+                        <span class="font-bold text-slate-800">
+
+                            ${doctor}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="w-full mt-3 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition">
+
+                    Print OPD Slip
+
+                </button>
+
+            `;
+
+
+            alert(
+                `Appointment Confirmed! Token: ${randomToken}`
+            );
+
+        }
+
+
+        // =========================================================
+        // QUEUE TABLE
+        // =========================================================
+
+        function renderQueueTable() {
+
+            const tbody =
+                document.getElementById('queueTableBody');
+
+            if (!tbody) return;
+
+            tbody.innerHTML =
+                queueData.map((item, index) => `
+
+                    <tr class="hover:bg-slate-50">
+
+                        <td class="py-3 px-4 font-mono font-bold text-blue-600">
+
+                            ${item.token}
+
+                        </td>
+
+                        <td class="py-3 px-4 font-semibold text-slate-800">
+
+                            ${item.patient}
+
+                        </td>
+
+                        <td class="py-3 px-4">
+
+                            ${item.dept}
+
+                        </td>
+
+                        <td class="py-3 px-4">
+
+                            ${item.doc}
+
+                        </td>
+
+                        <td class="py-3 px-4 text-xs">
+
+                            ${item.date}
+
+                        </td>
+
+                        <td class="py-3 px-4">
+
+                            <span class="px-2 py-0.5 rounded text-xs font-bold
+                                ${item.status === 'Confirmed'
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : 'bg-amber-100 text-amber-700'}">
+
+                                ${item.status}
+
+                            </span>
+
+                        </td>
+
+                        <td class="py-3 px-4 text-right">
+
+                            <button type="button"
+                                    onclick="cancelAppointment(${index})"
+                                    class="text-xs text-rose-600 hover:underline">
+
+                                Cancel
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `).join('');
+
+        }
+
+
+        // =========================================================
+        // CANCEL APPOINTMENT
+        // =========================================================
+
+        function cancelAppointment(index) {
+
+            if (confirm('Cancel this appointment slot?')) {
+
+                queueData.splice(index, 1);
+
+                renderQueueTable();
+
+            }
+
+        }
+
+
+        // =========================================================
+        // TABS
+        // =========================================================
+
+        function switchTab(tabId) {
+
+            [
+                'tab-book',
+                'tab-queue',
+                'tab-roles'
+            ].forEach(id => {
+
+                const element =
+                    document.getElementById(id);
+
+                if (element) {
+
+                    element.classList.add('hidden');
+
+                }
+
+            });
+
+
+            const activeTab =
+                document.getElementById(tabId);
+
+            if (activeTab) {
+
+                activeTab.classList.remove('hidden');
+
+            }
+
+
+            [
+                'btn-tab-book',
+                'btn-tab-queue',
+                'btn-tab-roles'
+            ].forEach(btn => {
+
+                const element =
+                    document.getElementById(btn);
+
+                if (element) {
+
+                    element.className =
+                        "px-3.5 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:text-white transition";
+
+                }
+
+            });
+
+
+            const activeButton =
+                document.getElementById('btn-' + tabId);
+
+            if (activeButton) {
+
+                activeButton.className =
+                    "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white transition";
+
+            }
+
+        }
+
+
+        // =========================================================
+        // CLOSE MODAL
+        // =========================================================
+
+        function closeModal(modalId) {
+
+            const modal =
+                document.getElementById(modalId);
+
+            if (!modal) return;
+
+            modal.classList.add('hidden');
+
+            document.body.classList.remove('overflow-hidden');
+
+        }
+
+
+        // =========================================================
+        // REAL LOGIN MODAL
+        // =========================================================
+
+        function openLoginModal() {
+
+            const modal =
+                document.getElementById('loginModal');
+
+            if (!modal) return;
+
+            modal.classList.remove('hidden');
+
+            document.body.classList.add('overflow-hidden');
+
+
+            setTimeout(() => {
+
+                const emailInput =
+                    document.getElementById('loginEmail');
+
+                if (emailInput) {
+
+                    emailInput.focus();
+
+                }
+
+            }, 100);
+
+
+            lucide.createIcons();
+
+        }
+
+
+        // =========================================================
+        // SHOW / HIDE LOGIN PASSWORD
+        // =========================================================
+
+        function toggleLoginPassword() {
+
+            const passwordInput =
+                document.getElementById('loginPassword');
+
+            const icon =
+                document.getElementById('loginPasswordIcon');
+
+            if (!passwordInput || !icon) return;
+
+
+            if (passwordInput.type === 'password') {
+
+                passwordInput.type = 'text';
+
+                icon.setAttribute(
+                    'data-lucide',
+                    'eye-off'
+                );
+
+            }
+
+            else {
+
+                passwordInput.type = 'password';
+
+                icon.setAttribute(
+                    'data-lucide',
+                    'eye'
+                );
+
+            }
+
+
+            lucide.createIcons();
+
+        }
+
+
+        // =========================================================
+        // CLOSE MODAL ON OUTSIDE CLICK
+        // =========================================================
+
+        document.addEventListener('click', function (event) {
+
+            const modal =
+                document.getElementById('loginModal');
+
+            if (!modal) return;
+
+            if (modal.classList.contains('hidden')) {
+
+                return;
+
+            }
+
+
+            if (event.target === modal) {
+
+                closeModal('loginModal');
+
+            }
+
+        });
+
+
+        // =========================================================
+        // CLOSE LOGIN WITH ESCAPE
+        // =========================================================
+
+        document.addEventListener('keydown', function (event) {
+
+            if (event.key !== 'Escape') {
+
+                return;
+
+            }
+
+
+            const loginModal =
+                document.getElementById('loginModal');
+
+            if (
+                loginModal &&
+                !loginModal.classList.contains('hidden')
+            ) {
+
+                closeModal('loginModal');
+
+            }
+
+
+            const detailModal =
+                document.getElementById('detailModal');
+
+            if (
+                detailModal &&
+                !detailModal.classList.contains('hidden')
+            ) {
+
+                closeModal('detailModal');
+
+            }
+
+        });
+
+
+        // =========================================================
+        // SCROLL
+        // =========================================================
+
+        function scrollToSection(id) {
+
+            const element =
+                document.getElementById(id);
+
+            if (!element) return;
+
+            element.scrollIntoView({
+                behavior: 'smooth'
+            });
+
+        }
+
+
+        // =========================================================
+        // PAGE LOAD
+        // =========================================================
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            renderDepartments();
+
+            renderQueueTable();
+
+
+            const appointmentDate =
+                document.getElementById('appointmentDate');
+
+
+            if (appointmentDate) {
+
+                const today =
+                    new Date()
+                        .toISOString()
+                        .split('T')[0];
+
+                appointmentDate.value = today;
+
+            }
+
+
+            lucide.createIcons();
+
+
+            // =====================================================
+            // LOGIN ERROR -> AUTOMATICALLY OPEN LOGIN POPUP
+            // =====================================================
+
+            const loginErrorExists =
+    @((TempData["LoginError"] != null).ToString().ToLower());
+
+const openLoginPopup =
+    @((TempData["OpenLoginPopup"]?.ToString() == "true").ToString().ToLower());
+
+if (loginErrorExists || openLoginPopup) {
+    setTimeout(() => {
+        openLoginModal();
+    }, 150);
+}
+
+        });
+
+    </script>
+
+</body>
+</html>

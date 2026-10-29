@@ -1,0 +1,1459 @@
+@using HealthcareManagementSystem.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentController =
+        ViewContext.RouteData.Values["controller"]?.ToString();
+
+    var currentAction =
+        ViewContext.RouteData.Values["action"]?.ToString();
+
+    var isAdminPage =
+        currentController?.Equals(
+            "Admin",
+            StringComparison.OrdinalIgnoreCase
+        ) == true;
+
+    var isAuthenticated =
+        User.Identity != null &&
+        User.Identity.IsAuthenticated;
+
+    var isAdminUser =
+        isAuthenticated &&
+        User.IsInRole("Admin");
+
+    var layoutUser =
+        isAuthenticated
+            ? await UserManager.GetUserAsync(User)
+            : null;
+
+    var displayName = layoutUser?.FullName;
+
+    if (string.IsNullOrWhiteSpace(displayName))
+        displayName = layoutUser?.Email?.Split('@')[0];
+
+    if (string.IsNullOrWhiteSpace(displayName))
+        displayName = "User";
+
+    var firstLetter =
+        displayName.Trim().Substring(0, 1).ToUpper();
+
+    var adminDisplayName =
+        isAdminUser ? displayName : "Administrator";
+
+    var adminFirstLetter =
+        adminDisplayName.Trim()
+            .Substring(0, 1)
+            .ToUpper();
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - HealthCare
+    </title>
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           NORMAL WEBSITE NAVBAR
+        ===================================================== */
+
+        .main-navbar {
+            width: 100%;
+            background: linear-gradient(
+                135deg,
+                #0877c9,
+                #0056a6
+            );
+            color: #fff;
+            box-shadow:
+                0 5px 20px rgba(0,0,0,.10);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            min-height: 72px;
+            margin: auto;
+            padding: 0 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .brand:hover {
+            color: #fff;
+        }
+
+        .brand-heart {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: rgba(255,255,255,.16);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .nav-links > a {
+            padding: 10px 14px;
+            border-radius: 9px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .nav-links > a:hover {
+            color: #fff;
+            background: rgba(255,255,255,.14);
+        }
+
+
+        /* =====================================================
+           LOGGED IN USER
+        ===================================================== */
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-mini {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 9px;
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+        .profile-mini:hover {
+            color: #fff;
+            background: rgba(255,255,255,.14);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: #fff;
+            background: rgba(255,255,255,.18);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .profile-name {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-button {
+            padding: 9px 13px;
+            border: 1px solid rgba(255,255,255,.45);
+            border-radius: 9px;
+            color: #fff;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .logout-button:hover {
+            color: #075ca5;
+            background: #fff;
+        }
+
+
+        /* =====================================================
+           LOGIN / GET STARTED
+        ===================================================== */
+
+        .nav-get-started {
+            padding: 10px 16px;
+            border-radius: 9px;
+            color: #0067b9;
+            background: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: .2s;
+        }
+
+        .nav-get-started:hover {
+            color: #00579d;
+            background: #eef8ff;
+        }
+
+        .nav-login {
+            padding: 10px 16px;
+            border: 1px solid rgba(255,255,255,.45);
+            border-radius: 9px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: .2s;
+        }
+
+        .nav-login:hover {
+            color: #fff;
+            background: rgba(255,255,255,.14);
+        }
+
+
+        /* =====================================================
+           ADMIN SHELL
+        ===================================================== */
+
+        .admin-shell {
+            min-height: 100vh;
+            display: flex;
+            background:
+                radial-gradient(
+                    circle at 85% 5%,
+                    rgba(14,165,233,.12),
+                    transparent 25%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f3f8fd,
+                    #eef6fb,
+                    #f8fbfd
+                );
+        }
+
+
+        /* =====================================================
+           ADMIN SIDEBAR
+        ===================================================== */
+
+        .admin-sidebar {
+            width: 270px;
+            min-width: 270px;
+            min-height: 100vh;
+            padding: 22px 16px;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+            background:
+                linear-gradient(
+                    180deg,
+                    #075fa8,
+                    #064d8b 55%,
+                    #043e72
+                );
+            position: sticky;
+            top: 0;
+            box-shadow:
+                8px 0 30px rgba(0,65,120,.14);
+            z-index: 900;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 9px 24px;
+            margin-bottom: 20px;
+            border-bottom:
+                1px solid rgba(255,255,255,.13);
+        }
+
+        .admin-brand-icon {
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: rgba(255,255,255,.15);
+            font-size: 23px;
+        }
+
+        .admin-brand-title {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .admin-brand-subtitle {
+            margin-top: 3px;
+            color: rgba(255,255,255,.68);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+
+        .admin-menu-title {
+            padding: 0 11px 9px;
+            color: rgba(255,255,255,.55);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .admin-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .admin-menu-link {
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            color: rgba(255,255,255,.83);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .admin-menu-link:hover {
+            color: #fff;
+            background:
+                rgba(255,255,255,.12);
+            transform: translateX(2px);
+        }
+
+        .admin-menu-link.active {
+            color: #075fa8;
+            background: #fff;
+            box-shadow:
+                0 5px 16px rgba(0,0,0,.08);
+        }
+
+        .admin-menu-icon {
+            width: 22px;
+            min-width: 22px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .admin-menu-text {
+            flex: 1;
+        }
+
+
+        /* =====================================================
+           SIDEBAR BOTTOM
+        ===================================================== */
+
+        .admin-sidebar-bottom {
+            margin-top: auto;
+            padding-top: 18px;
+            border-top:
+                1px solid rgba(255,255,255,.13);
+        }
+
+        .admin-back-site {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 12px;
+            border-radius: 10px;
+            color: rgba(255,255,255,.85);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .admin-back-site:hover {
+            color: #fff;
+            background: rgba(255,255,255,.11);
+        }
+
+
+        /* =====================================================
+           ADMIN CONTENT
+        ===================================================== */
+
+        .admin-content {
+            flex: 1;
+            min-width: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =====================================================
+           ADMIN TOP BAR
+        ===================================================== */
+
+        .admin-topbar {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 0 28px;
+            border-bottom: 1px solid #e3edf4;
+            background: rgba(255,255,255,.95);
+            position: sticky;
+            top: 0;
+            z-index: 800;
+            backdrop-filter: blur(12px);
+        }
+
+        .admin-page-heading h2 {
+            margin: 0;
+            color: #163b59;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .admin-page-heading span {
+            display: block;
+            margin-top: 2px;
+            color: #7890a1;
+            font-size: 12px;
+        }
+
+        .admin-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+
+        /* SEARCH */
+
+        .admin-search {
+            width: 260px;
+            display: flex;
+            align-items: center;
+            padding: 0 11px;
+            border: 1px solid #e1ebf2;
+            border-radius: 10px;
+            background: #f5f9fc;
+        }
+
+        .admin-search input {
+            width: 100%;
+            padding: 9px 0;
+            border: 0;
+            outline: 0;
+            color: #35566d;
+            background: transparent;
+            font-size: 12px;
+        }
+
+
+        /* ONLINE STATUS */
+
+        .admin-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            border: 1px solid #d9edfa;
+            border-radius: 20px;
+            color: #0875bf;
+            background: #f0f8ff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .admin-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22a06b;
+        }
+
+
+        /* ADMIN PROFILE */
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 8px;
+            border-radius: 10px;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .admin-profile:hover {
+            background: #f1f7fb;
+        }
+
+        .admin-profile-avatar {
+            width: 39px;
+            height: 39px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: #fff;
+            background:
+                linear-gradient(
+                    135deg,
+                    #0b83d5,
+                    #0562a9
+                );
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .admin-profile-name {
+            display: block;
+            color: #1e3e56;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .admin-profile-role {
+            display: block;
+            color: #8498a8;
+            font-size: 11px;
+        }
+
+
+        /* LOGOUT */
+
+        .admin-logout-form {
+            margin: 0;
+        }
+
+        .admin-logout-button {
+            padding: 9px 12px;
+            border: 0;
+            border-radius: 9px;
+            color: #d95353;
+            background: #fff3f3;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .admin-logout-button:hover {
+            color: #fff;
+            background: #d95353;
+        }
+
+
+        /* =====================================================
+           BLUE GO BACK BUTTON
+        ===================================================== */
+
+        .admin-page {
+            flex: 1;
+            width: 100%;
+            padding: 28px;
+        }
+
+        .admin-page-content {
+            width: 100%;
+        }
+
+        .admin-go-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            border: 1px solid #0d6efd;
+            border-radius: 10px;
+            color: #fff;
+            background:
+                linear-gradient(
+                    135deg,
+                    #1677ee,
+                    #0757d6
+                );
+            box-shadow:
+                0 7px 18px rgba(13,110,253,.20);
+            font-size: 13px;
+            font-weight: 750;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .admin-go-back:hover {
+            color: #fff;
+            background:
+                linear-gradient(
+                    135deg,
+                    #0757d6,
+                    #0347b0
+                );
+            transform: translateY(-2px);
+            box-shadow:
+                0 10px 23px rgba(13,110,253,.27);
+        }
+
+
+        /* =====================================================
+           ADMIN FOOTER
+        ===================================================== */
+
+        .admin-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 28px;
+            border-top: 1px solid #e4edf3;
+            color: #8498a8;
+            background: #fff;
+            font-size: 12px;
+        }
+
+        .admin-footer strong {
+            color: #42647b;
+        }
+
+
+        /* =====================================================
+           LOGIN PAGE SUPPORT
+        ===================================================== */
+
+        /*
+            Login page ko normal website ke saath properly
+            work karne ke liye layout body ko full height support.
+        */
+
+        .login-page-wrapper {
+            min-height: calc(100vh - 72px);
+            width: 100%;
+        }
+
+        .login-page-wrapper input,
+        .login-page-wrapper select,
+        .login-page-wrapper textarea {
+            box-sizing: border-box;
+        }
+
+        .login-page-wrapper button {
+            cursor: pointer;
+        }
+
+
+        /* =====================================================
+           PROFILE PAGE SUPPORT
+        ===================================================== */
+
+        .profile-page-wrapper {
+            min-height: calc(100vh - 72px);
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @@media(max-width:1100px) {
+
+            .admin-sidebar {
+                width: 235px;
+                min-width: 235px;
+            }
+
+            .admin-search {
+                width: 200px;
+            }
+
+            .nav-links > a {
+                padding: 9px 10px;
+            }
+
+            .profile-name {
+                max-width: 110px;
+            }
+        }
+
+
+        @@media(max-width:850px) {
+
+            .admin-sidebar {
+                width: 76px;
+                min-width: 76px;
+                padding: 18px 10px;
+            }
+
+            .admin-brand {
+                justify-content: center;
+            }
+
+            .admin-brand-title,
+            .admin-brand-subtitle,
+            .admin-menu-title,
+            .admin-menu-text,
+            .admin-back-site span {
+                display: none;
+            }
+
+            .admin-brand-icon {
+                width: 45px;
+            }
+
+            .admin-menu-link {
+                justify-content: center;
+            }
+
+            .admin-back-site {
+                justify-content: center;
+            }
+
+            .admin-search {
+                display: none;
+            }
+
+            .navbar-container {
+                padding: 0 15px;
+                gap: 10px;
+            }
+
+            .nav-links {
+                gap: 2px;
+            }
+
+            .nav-links > a {
+                padding: 8px 8px;
+                font-size: 13px;
+            }
+
+            .brand {
+                font-size: 19px;
+            }
+
+            .brand-heart {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+
+        @@media(max-width:650px) {
+
+            .admin-sidebar {
+                width: 64px;
+                min-width: 64px;
+            }
+
+            .admin-topbar {
+                padding: 0 15px;
+            }
+
+            .admin-page {
+                padding: 15px;
+            }
+
+            .admin-status {
+                display: none;
+            }
+
+            .admin-profile-info {
+                display: none;
+            }
+
+            .admin-footer {
+                padding: 14px 15px;
+            }
+
+            .navbar-container {
+                min-height: 64px;
+                padding: 0 10px;
+            }
+
+            .brand {
+                font-size: 17px;
+                gap: 6px;
+            }
+
+            .brand-heart {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .profile-name {
+                display: none;
+            }
+
+            .navbar-user {
+                margin-left: auto;
+            }
+
+            .nav-get-started,
+            .nav-login {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .logout-button {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+@if (isAdminPage && isAdminUser)
+{
+    <!-- =====================================================
+         ADMIN PANEL
+    ===================================================== -->
+
+    <div class="admin-shell">
+
+        <!-- SIDEBAR -->
+
+        <aside class="admin-sidebar">
+
+            <div class="admin-brand">
+
+                <div class="admin-brand-icon">
+                    ❤
+                </div>
+
+                <div>
+
+                    <div class="admin-brand-title">
+                        HealthCare
+                    </div>
+
+                    <div class="admin-brand-subtitle">
+                        Admin Panel
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-menu-title">
+                Management
+            </div>
+
+
+            <nav class="admin-menu">
+
+                <a asp-controller="Admin"
+                   asp-action="Dashboard"
+                   class="admin-menu-link @(currentAction == "Dashboard" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        ▦
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Users"
+                   class="admin-menu-link @(currentAction == "Users" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        👥
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Users
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Patients"
+                   class="admin-menu-link @(currentAction == "Patients" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        🧑‍⚕️
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Patients
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Doctors"
+                   class="admin-menu-link @(currentAction == "Doctors" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        👨‍⚕️
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Doctors
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Appointments"
+                   class="admin-menu-link @(currentAction == "Appointments" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        📅
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Appointments
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Records"
+                   class="admin-menu-link @(currentAction == "Records" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        📋
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Medical Records
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Billing"
+                   class="admin-menu-link @(currentAction == "Billing" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        💳
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Billing
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Reports"
+                   class="admin-menu-link @(currentAction == "Reports" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        📊
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Reports
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Roles"
+                   class="admin-menu-link @(currentAction == "Roles" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        🔐
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Roles &amp; Permissions
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="Settings"
+                   class="admin-menu-link @(currentAction == "Settings" ? "active" : "")">
+
+                    <span class="admin-menu-icon">
+                        ⚙
+                    </span>
+
+                    <span class="admin-menu-text">
+                        Settings
+                    </span>
+
+                </a>
+
+            </nav>
+
+
+            <div class="admin-sidebar-bottom">
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="admin-back-site">
+
+                    <span style="font-size:18px;">
+                        ←
+                    </span>
+
+                    <span>
+                        Back to Website
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ADMIN CONTENT -->
+
+        <div class="admin-content">
+
+
+            <!-- TOP BAR -->
+
+            <header class="admin-topbar">
+
+                <div class="admin-page-heading">
+
+                    <h2>
+                        @(ViewData["Title"]?.ToString()
+                            ?? "Admin Dashboard")
+                    </h2>
+
+                    <span>
+                        HealthCare Management System
+                    </span>
+
+                </div>
+
+
+                <div class="admin-topbar-right">
+
+
+                    <!-- SEARCH -->
+
+                    <div class="admin-search">
+
+                        <span>
+                            🔍
+                        </span>
+
+                        <input type="text"
+                               placeholder="Search..." />
+
+                    </div>
+
+
+                    <!-- ONLINE STATUS -->
+
+                    <div class="admin-status">
+
+                        <span class="admin-status-dot">
+                        </span>
+
+                        System Online
+
+                    </div>
+
+
+                    <!-- ADMIN PROFILE -->
+
+                    <a asp-controller="Account"
+                       asp-action="Profile"
+                       class="admin-profile">
+
+                        <span class="admin-profile-avatar">
+
+                            @adminFirstLetter
+
+                        </span>
+
+                        <span class="admin-profile-info">
+
+                            <span class="admin-profile-name">
+
+                                @adminDisplayName
+
+                            </span>
+
+                            <span class="admin-profile-role">
+
+                                Administrator
+
+                            </span>
+
+                        </span>
+
+                    </a>
+
+
+                    <!-- ADMIN LOGOUT -->
+
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post"
+                          class="admin-logout-form">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="admin-logout-button">
+
+                            Logout
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE -->
+
+            <main class="admin-page">
+
+                @if (!string.Equals(
+                    currentAction,
+                    "Dashboard",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    <button type="button"
+                            class="admin-go-back"
+                            onclick="adminGoBack()">
+
+                        <span>
+                            ←
+                        </span>
+
+                        <span>
+                            Go Back
+                        </span>
+
+                    </button>
+                }
+
+
+                <div class="admin-page-content">
+
+                    @RenderBody()
+
+                </div>
+
+            </main>
+
+
+            <!-- ADMIN FOOTER -->
+
+            <footer class="admin-footer">
+
+                <span>
+
+                    © 2026
+
+                    <strong>
+                        HealthCare Management System
+                    </strong>
+
+                </span>
+
+                <span>
+                    Admin Panel • Secure Management
+                </span>
+
+            </footer>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <!-- =====================================================
+         NORMAL WEBSITE
+    ===================================================== -->
+
+    <header>
+
+        <nav class="main-navbar">
+
+            <div class="navbar-container">
+
+
+                <!-- BRAND -->
+
+                <a class="brand"
+                   asp-controller="Home"
+                   asp-action="Index">
+
+                    <span class="brand-heart">
+                        ❤
+                    </span>
+
+                    <span>
+                        HealthCare
+                    </span>
+
+                </a>
+
+
+                <!-- NAVIGATION -->
+
+                <div class="nav-links">
+
+                    <a asp-controller="Home"
+                       asp-action="Index">
+
+                        Home
+
+                    </a>
+
+
+                    <a asp-controller="Home"
+                       asp-action="About">
+
+                        About
+
+                    </a>
+
+
+                    <a asp-controller="Home"
+                       asp-action="Services">
+
+                        Services
+
+                    </a>
+
+
+                    <a asp-controller="Home"
+                       asp-action="Contact">
+
+                        Contact
+
+                    </a>
+
+
+                    @if (isAdminUser)
+                    {
+                        <a asp-controller="Admin"
+                           asp-action="Dashboard">
+
+                            ▦ Admin
+
+                        </a>
+                    }
+
+                </div>
+
+
+                <!-- RIGHT SIDE -->
+
+                <div class="navbar-user">
+
+                    @if (isAuthenticated)
+                    {
+                        <!-- =================================================
+                             LOGGED IN USER
+                        ================================================= -->
+
+                        <a class="profile-mini"
+                           asp-controller="Account"
+                           asp-action="Profile"
+                           title="Open Profile">
+
+                            <span class="profile-avatar">
+
+                                @firstLetter
+
+                            </span>
+
+                            <span class="profile-name">
+
+                                @displayName
+
+                            </span>
+
+                        </a>
+
+
+                        <!-- LOGOUT -->
+
+                        <form asp-controller="Account"
+                              asp-action="Logout"
+                              method="post"
+                              class="logout-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="logout-button">
+
+                                Logout
+
+                            </button>
+
+                        </form>
+                    }
+                    else
+                    {
+                        <!-- =================================================
+                             LOGGED OUT
+                        ================================================= -->
+
+                        <a asp-controller="Account"
+                           asp-action="Register"
+                           class="nav-get-started">
+
+                            Get Started
+
+                        </a>
+
+
+                        <a asp-controller="Account"
+                           asp-action="Login"
+                           class="nav-login">
+
+                            Login
+
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         NORMAL PAGE CONTENT
+    ===================================================== -->
+
+    <main>
+
+        @RenderBody()
+
+    </main>
+}
+
+
+<!-- =========================================================
+     ADMIN GO BACK SCRIPT
+========================================================= -->
+
+<script>
+
+    function adminGoBack() {
+
+        if (
+            document.referrer &&
+            document.referrer !== window.location.href
+        ) {
+
+            window.history.back();
+
+        }
+        else {
+
+            window.location.href =
+                '@Url.Action("Dashboard", "Admin")';
+
+        }
+
+    }
+
+</script>
+
+
+<!-- =========================================================
+     PAGE SCRIPTS
+========================================================= -->
+
+@await RenderSectionAsync(
+    "Scripts",
+    required: false
+)
+
+</body>
+
+</html>

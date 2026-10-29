@@ -1,0 +1,75 @@
+@model IEnumerable<HealthcareManagementSystem.ViewModels.AdminUserViewModel>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "User Management";
+}
+
+<div class="space-y-6">
+
+  <!-- HEADER WITH LEFT GO BACK -->
+  <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <a href="/Admin/Dashboard" class="inline-flex items-center gap-2 px-4 py-2 bg-[#1877f2] hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Go Back</span>
+      </a>
+      <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+        <i data-lucide="user-cog" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">System Users &amp; Credentials</h1>
+        <p class="text-xs text-slate-400 mt-0.5">Manage accounts, security status, and account lockout for staff and patients.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-slate-600">
+        <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-100">
+          <tr>
+            <th class="py-3.5 px-6">User</th>
+            <th class="py-3.5 px-6">Email</th>
+            <th class="py-3.5 px-6">Role</th>
+            <th class="py-3.5 px-6">Status</th>
+            <th class="py-3.5 px-6 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 font-medium">
+          @if (Model != null && Model.Any())
+          {
+            foreach (var user in Model)
+            {
+              <tr>
+                <td class="py-3.5 px-6 font-bold text-slate-900">@user.FullName</td>
+                <td class="py-3.5 px-6">@user.Email</td>
+                <td class="py-3.5 px-6">
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-[#1877f2]">@user.Role</span>
+                </td>
+                <td class="py-3.5 px-6">
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold @(user.IsActive ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700")">
+                    @(user.IsActive ? "Active" : "Locked")
+                  </span>
+                </td>
+                <td class="py-3.5 px-6 text-right">
+                  <form asp-controller="Admin" asp-action="ToggleUserStatus" asp-route-id="@user.Id" method="post" class="inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="text-xs text-slate-500 hover:text-slate-800 font-bold mr-2">Toggle Status</button>
+                  </form>
+                </td>
+              </tr>
+            }
+          }
+          else
+          {
+            <tr>
+              <td colspan="5" class="py-8 text-center text-slate-400 text-xs">No registered accounts in system database.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

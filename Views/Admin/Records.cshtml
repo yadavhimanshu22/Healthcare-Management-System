@@ -1,0 +1,38 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Medical Records";
+}
+
+<div class="space-y-6">
+
+  <!-- HEADER WITH LEFT GO BACK -->
+  <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <a href="/Admin/Dashboard" class="inline-flex items-center gap-2 px-4 py-2 bg-[#1877f2] hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Go Back</span>
+      </a>
+      <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#1877f2] flex items-center justify-center">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Electronic Medical Records (EMR)</h1>
+        <p class="text-xs text-slate-400 mt-0.5">Archive, clinical case histories, lab results and diagnostic attachments.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+      <h2 class="text-base font-bold text-slate-900">Patient Electronic Dossier Lookup</h2>
+      <input type="text" placeholder="Search by Record # or Patient Name..." class="px-4 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-[#1877f2] outline-none w-72" />
+    </div>
+
+    <div class="p-8 text-center bg-slate-50 border border-dashed border-slate-200 rounded-xl">
+      <i data-lucide="folder-search" class="w-10 h-10 text-slate-300 mx-auto mb-2"></i>
+      <h3 class="text-sm font-bold text-slate-700">Digital History Repository Active</h3>
+      <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Select a patient or enter a consult token to inspect diagnosis history, lab documents, and prescriptions.</p>
+    </div>
+  </div>
+
+</div>

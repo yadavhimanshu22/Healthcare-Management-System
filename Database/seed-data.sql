@@ -1,0 +1,6 @@
+-- Demo accounts are created automatically by DbSeeder.cs:
+-- admin@healthcare.com / Admin@123
+-- doctor@healthcare.com / Doctor@123
+-- patient@healthcare.com / Patient@123
+-- receptionist@healthcare.com / Receptionist@123
+-- Change demo passwords before any real deployment.

@@ -1,0 +1,785 @@
+@model HealthcareManagementSystem.ViewModels.DoctorDashboardViewModel
+
+@{
+    ViewData["Title"] = "Doctor Dashboard";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet"
+      href="~/css/doctor-dashboard.css"
+      asp-append-version="true" />
+
+
+<div class="doctor-dashboard">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="doctor-dashboard-header">
+
+        <div>
+            <span class="dashboard-label">
+                DOCTOR PORTAL
+            </span>
+
+            <h1>
+                Welcome, Dr. @Model.DoctorName
+            </h1>
+
+            <p>
+                Manage your appointments, patients and clinical work
+                from one place.
+            </p>
+        </div>
+
+        <div class="doctor-profile-mini">
+
+            <div class="doctor-avatar">
+                @(
+                    string.IsNullOrWhiteSpace(Model.DoctorName)
+                        ? "D"
+                        : Model.DoctorName
+                            .Trim()
+                            .Substring(0, 1)
+                            .ToUpper()
+                )
+            </div>
+
+            <div>
+                <strong>
+                    @Model.DoctorName
+                </strong>
+
+                <span>
+                    @Model.Specialization
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="stats-grid">
+
+        <!-- TODAY APPOINTMENTS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📅
+            </div>
+
+            <div>
+                <span>
+                    Today's Appointments
+                </span>
+
+                <strong>
+                    @Model.TodayAppointments
+                </strong>
+            </div>
+
+        </div>
+
+
+        <!-- PENDING -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⏳
+            </div>
+
+            <div>
+                <span>
+                    Pending Appointments
+                </span>
+
+                <strong>
+                    @Model.PendingAppointments
+                </strong>
+            </div>
+
+        </div>
+
+
+        <!-- COMPLETED -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ✓
+            </div>
+
+            <div>
+                <span>
+                    Completed
+                </span>
+
+                <strong>
+                    @Model.CompletedAppointments
+                </strong>
+            </div>
+
+        </div>
+
+
+        <!-- PATIENTS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <div>
+                <span>
+                    My Patients
+                </span>
+
+                <strong>
+                    @Model.TotalPatients
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <div class="doctor-content-grid">
+
+
+        <!-- =================================================
+             TODAY'S APPOINTMENTS
+        ================================================== -->
+
+        <section class="dashboard-card appointments-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Today's Appointments
+                    </h2>
+
+                    <p>
+                        Manage your scheduled consultations.
+                    </p>
+
+                </div>
+
+                <a asp-controller="Doctor"
+                   asp-action="Appointments"
+                   class="view-all">
+                    View All
+                </a>
+
+            </div>
+
+
+            @if (Model.TodayAppointmentList != null &&
+                 Model.TodayAppointmentList.Any())
+            {
+                <div class="appointment-list">
+
+                    @foreach (var appointment
+                              in Model.TodayAppointmentList)
+                    {
+                        <div class="appointment-item">
+
+                            <div class="appointment-time">
+
+                                <strong>
+                                    @appointment.Time
+                                </strong>
+
+                                <span>
+                                    @appointment.Date
+                                </span>
+
+                            </div>
+
+
+                            <div class="appointment-patient">
+
+                                <strong>
+                                    @appointment.PatientName
+                                </strong>
+
+                                <span>
+                                    @appointment.Reason
+                                </span>
+
+                            </div>
+
+
+                            <span class="status-badge
+                                @appointment.Status
+                                    .ToLower()
+                                    .Replace(" ", "-")">
+
+                                @appointment.Status
+
+                            </span>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📅
+                    </div>
+
+                    <h3>
+                        No appointments today
+                    </h3>
+
+                    <p>
+                        Your scheduled appointments will
+                        appear here.
+                    </p>
+
+                </div>
+            }
+
+        </section>
+
+
+        <!-- =================================================
+             QUICK ACTIONS
+        ================================================== -->
+
+        <section class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Quick Actions
+                    </h2>
+
+                    <p>
+                        Frequently used doctor tools.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+
+                <!-- PATIENTS -->
+
+                <a asp-controller="Doctor"
+                   asp-action="Patients"
+                   class="quick-action">
+
+                    <span class="quick-icon">
+                        👥
+                    </span>
+
+                    <span>
+                        Patient List
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- MEDICAL RECORDS -->
+
+                <a asp-controller="Doctor"
+                   asp-action="MedicalRecords"
+                   class="quick-action">
+
+                    <span class="quick-icon">
+                        📋
+                    </span>
+
+                    <span>
+                        Medical Records
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- DIAGNOSIS -->
+
+                <a asp-controller="Doctor"
+                   asp-action="Diagnosis"
+                   class="quick-action">
+
+                    <span class="quick-icon">
+                        🩺
+                    </span>
+
+                    <span>
+                        Diagnosis
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- PRESCRIPTION -->
+
+                <a asp-controller="Doctor"
+                   asp-action="Prescriptions"
+                   class="quick-action">
+
+                    <span class="quick-icon">
+                        💊
+                    </span>
+
+                    <span>
+                        Prescription
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- LAB REPORTS -->
+
+                <a asp-controller="Doctor"
+                   asp-action="LaboratoryReports"
+                   class="quick-action">
+
+                    <span class="quick-icon">
+                        🧪
+                    </span>
+
+                    <span>
+                        Laboratory Reports
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- FOLLOW UP -->
+
+                <a asp-controller="Doctor"
+                   asp-action="FollowUps"
+                   class="quick-action">
+
+                    <span class="quick-icon">
+                        🔄
+                    </span>
+
+                    <span>
+                        Follow-up Appointments
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         CLINICAL MANAGEMENT
+    ====================================================== -->
+
+    <section class="dashboard-card clinical-section">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Clinical Management
+                </h2>
+
+                <p>
+                    Access patient clinical information
+                    and consultation tools.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="clinical-grid">
+
+
+            <!-- PATIENT HISTORY -->
+
+            <a asp-controller="Doctor"
+               asp-action="PatientHistory"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    🗂️
+                </div>
+
+                <div>
+
+                    <h3>
+                        Patient History
+                    </h3>
+
+                    <p>
+                        View previous visits,
+                        diagnoses and treatments.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- MEDICAL RECORDS -->
+
+            <a asp-controller="Doctor"
+               asp-action="MedicalRecords"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    📄
+                </div>
+
+                <div>
+
+                    <h3>
+                        Medical Records
+                    </h3>
+
+                    <p>
+                        Review and manage patient
+                        medical records.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- DIAGNOSIS -->
+
+            <a asp-controller="Doctor"
+               asp-action="Diagnosis"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    🩺
+                </div>
+
+                <div>
+
+                    <h3>
+                        Diagnosis
+                    </h3>
+
+                    <p>
+                        Record patient diagnosis
+                        and clinical findings.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- PRESCRIPTION -->
+
+            <a asp-controller="Doctor"
+               asp-action="Prescriptions"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    💊
+                </div>
+
+                <div>
+
+                    <h3>
+                        Prescription
+                    </h3>
+
+                    <p>
+                        Create and manage
+                        patient prescriptions.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- LAB REPORT -->
+
+            <a asp-controller="Doctor"
+               asp-action="LaboratoryReports"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    🧪
+                </div>
+
+                <div>
+
+                    <h3>
+                        Laboratory Reports
+                    </h3>
+
+                    <p>
+                        Review available laboratory
+                        investigation reports.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- CONSULTATION NOTES -->
+
+            <a asp-controller="Doctor"
+               asp-action="ConsultationNotes"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    📝
+                </div>
+
+                <div>
+
+                    <h3>
+                        Consultation Notes
+                    </h3>
+
+                    <p>
+                        Add and review consultation
+                        notes for patients.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- FOLLOW UP -->
+
+            <a asp-controller="Doctor"
+               asp-action="FollowUps"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    🔄
+                </div>
+
+                <div>
+
+                    <h3>
+                        Follow-up Appointments
+                    </h3>
+
+                    <p>
+                        Manage future patient
+                        follow-up appointments.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- APPOINTMENT STATUS -->
+
+            <a asp-controller="Doctor"
+               asp-action="Appointments"
+               class="clinical-card">
+
+                <div class="clinical-icon">
+                    📅
+                </div>
+
+                <div>
+
+                    <h3>
+                        Appointment Status
+                    </h3>
+
+                    <p>
+                        Update appointment status
+                        after consultation.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DOCTOR PROFILE
+    ====================================================== -->
+
+    <section class="dashboard-card profile-section">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Doctor Profile
+                </h2>
+
+                <p>
+                    Your professional information.
+                </p>
+
+            </div>
+
+            <a asp-controller="Doctor"
+               asp-action="Profile"
+               class="profile-button">
+                View Profile
+            </a>
+
+        </div>
+
+
+        <div class="profile-info-grid">
+
+            <div class="profile-info">
+
+                <span>
+                    Doctor
+                </span>
+
+                <strong>
+                    @Model.DoctorName
+                </strong>
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <span>
+                    Specialization
+                </span>
+
+                <strong>
+                    @Model.Specialization
+                </strong>
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <span>
+                    Email
+                </span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Email)
+                        ? "Not available"
+                        : Model.Email)
+                </strong>
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <span>
+                    Phone
+                </span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.PhoneNumber)
+                        ? "Not available"
+                        : Model.PhoneNumber)
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

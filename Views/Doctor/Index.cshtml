@@ -1,0 +1,3 @@
+@model Doctor
+@{ ViewData["Title"]="Doctor Dashboard"; }
+<div class="container py-5"><h1>Welcome, @Model.FullName</h1><div class="row g-3 mt-3"><div class="col-md-4"><div class="stat-card"><span>Today's Appointments</span><strong>@ViewBag.Today</strong></div></div><div class="col-md-4"><div class="stat-card"><span>Patients</span><strong>@ViewBag.Patients</strong></div></div><div class="col-md-4"><div class="stat-card"><span>Completed</span><strong>@ViewBag.Completed</strong></div></div></div><a class="btn btn-primary mt-4" asp-action="Appointments">View Appointments</a></div>

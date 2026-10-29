@@ -1,0 +1,33 @@
+@using HealthcareManagementSystem.Models
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    var recent = ViewBag.RecentAppointments as List<Appointment> ?? new List<Appointment>();
+}
+<style>
+.admin-wrap{max-width:1400px;margin:auto}.admin-title{font-weight:800;color:#17365d}.stat-box{background:#fff;border:1px solid #e5edf7;border-radius:18px;padding:22px;box-shadow:0 8px 28px rgba(31,64,104,.07);height:100%}.stat-label{color:#71839a;font-size:13px}.stat-value{font-size:30px;font-weight:800;color:#17365d}.admin-card{background:#fff;border:1px solid #e5edf7;border-radius:18px;padding:22px;box-shadow:0 8px 28px rgba(31,64,104,.06)}
+</style>
+<div class="admin-wrap py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div><h1 class="admin-title mb-1">Admin Dashboard</h1><p class="text-secondary mb-0">Complete healthcare system overview</p></div>
+        <a asp-action="Index" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Refresh</a>
+    </div>
+    @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+    <div class="row g-3">
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Total Patients</div><div class="stat-value">@ViewBag.TotalPatients</div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Total Doctors</div><div class="stat-value">@ViewBag.TotalDoctors</div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Total Users</div><div class="stat-value">@ViewBag.TotalUsers</div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Today's Appointments</div><div class="stat-value">@ViewBag.TodayAppointments</div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Pending Appointments</div><div class="stat-value">@ViewBag.PendingAppointments</div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Completed Appointments</div><div class="stat-value">@ViewBag.CompletedAppointments</div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Cancelled Appointments</div><div class="stat-value">@ViewBag.CancelledAppointments</div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="stat-box"><div class="stat-label">Paid Revenue</div><div class="stat-value">₹@(((decimal)ViewBag.TotalRevenue).ToString("N0"))</div></div></div>
+    </div>
+    <div class="admin-card mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3"><div><h5 class="mb-1">Recent Appointments</h5><small class="text-secondary">Latest appointment activity</small></div><a asp-action="Appointments" class="btn btn-sm btn-outline-primary">View All</a></div>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr></thead><tbody>
+        @if (!recent.Any()) { <tr><td colspan="5" class="text-center text-secondary py-4">No appointments found.</td></tr> }
+        else { foreach(var a in recent) { <tr><td>@a.Patient?.FullName</td><td>@a.Doctor?.FullName</td><td>@a.AppointmentDate.ToString("dd-MM-yyyy")</td><td>@a.AppointmentTime</td><td><span class="badge text-bg-light">@a.Status</span></td></tr> } }
+        </tbody></table></div>
+    </div>
+</div>

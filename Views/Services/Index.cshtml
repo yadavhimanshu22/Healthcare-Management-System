@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Our Services - Healthcare Management System</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8fc;
+            color: #172b4d;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #0d6efd !important;
+            font-size: 23px;
+        }
+
+        .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            margin-left: 15px;
+        }
+
+        .nav-link:hover {
+            color: #0d6efd !important;
+        }
+
+        .services-header {
+            background: linear-gradient(135deg, #0d6efd, #4da3ff);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .services-header h1 {
+            font-size: 45px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .services-header p {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .services-section {
+            padding: 70px 0;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px 25px;
+            text-align: center;
+            height: 100%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        .service-icon {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #e8f2ff;
+            color: #0d6efd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 35px;
+        }
+
+        .service-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #172b4d;
+        }
+
+        .service-card p {
+            color: #6c757d;
+            line-height: 1.7;
+        }
+
+        .service-btn {
+            margin-top: 15px;
+            border-radius: 25px;
+            padding: 8px 22px;
+        }
+
+        .footer {
+            background: #212529;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar navbar-expand-lg">
+
+        <div class="container">
+
+            <a class="navbar-brand"
+               href="/">
+                <i class="bi bi-heart-pulse-fill"></i>
+                Healthcare System
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMenu">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <div class="collapse navbar-collapse"
+                 id="navbarMenu">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="/">
+                            Home
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active"
+                           href="/Services">
+                            Services
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="/Home/About">
+                            About
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="/Home/Contact">
+                            Contact
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="/Account/Login">
+                            Login
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- HEADER -->
+
+    <section class="services-header">
+
+        <div class="container">
+
+            <h1>
+                Our Healthcare Services
+            </h1>
+
+            <p>
+                Professional healthcare management services
+                for patients, doctors and administrators.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- SERVICES -->
+
+    <section class="services-section">
+
+        <div class="container">
+
+            <div class="text-center mb-5">
+
+                <h2>
+                    Healthcare Services
+                </h2>
+
+                <p class="text-muted">
+                    Manage all your healthcare activities
+                    from one platform.
+                </p>
+
+            </div>
+
+
+            <div class="row g-4">
+
+
+                <!-- 1 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+
+                        <h3>
+                            Doctor Appointment
+                        </h3>
+
+                        <p>
+                            Patients can search for doctors,
+                            check availability and book
+                            appointments easily.
+                        </p>
+
+                        <a href="/Appointment"
+                           class="btn btn-primary service-btn">
+                            Book Appointment
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 2 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                        <h3>
+                            Patient Management
+                        </h3>
+
+                        <p>
+                            Manage patient profiles,
+                            personal information and
+                            healthcare details securely.
+                        </p>
+
+                        <a href="/Patient"
+                           class="btn btn-primary service-btn">
+                            Patient Management
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 3 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-file-medical"></i>
+                        </div>
+
+                        <h3>
+                            Medical Records
+                        </h3>
+
+                        <p>
+                            Store and manage patient
+                            diagnosis, treatment and
+                            medical history.
+                        </p>
+
+                        <a href="/MedicalRecord"
+                           class="btn btn-primary service-btn">
+                            Medical Records
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 4 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-capsule"></i>
+                        </div>
+
+                        <h3>
+                            Prescription Management
+                        </h3>
+
+                        <p>
+                            Doctors can create prescriptions
+                            and patients can view their
+                            prescribed medicines.
+                        </p>
+
+                        <a href="/Prescription"
+                           class="btn btn-primary service-btn">
+                            Prescriptions
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 5 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-clipboard2-pulse"></i>
+                        </div>
+
+                        <h3>
+                            Laboratory Reports
+                        </h3>
+
+                        <p>
+                            Upload, manage and view
+                            laboratory test reports
+                            securely.
+                        </p>
+
+                        <a href="/LabReport"
+                           class="btn btn-primary service-btn">
+                            Lab Reports
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 6 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+
+                        <h3>
+                            Billing
+                        </h3>
+
+                        <p>
+                            Manage consultation charges,
+                            laboratory charges, medicines
+                            and payments.
+                        </p>
+
+                        <a href="/Billing"
+                           class="btn btn-primary service-btn">
+                            Billing
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 7 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+
+                        <h3>
+                            Doctor Management
+                        </h3>
+
+                        <p>
+                            Manage doctor profiles,
+                            specializations, departments
+                            and availability.
+                        </p>
+
+                        <a href="/Doctor"
+                           class="btn btn-primary service-btn">
+                            Doctors
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 8 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <h3>
+                            Department Management
+                        </h3>
+
+                        <p>
+                            Organize healthcare departments
+                            and connect doctors with
+                            their departments.
+                        </p>
+
+                        <a href="/Department"
+                           class="btn btn-primary service-btn">
+                            Departments
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 9 -->
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="service-card">
+
+                        <div class="service-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+
+                        <h3>
+                            Secure Healthcare
+                        </h3>
+
+                        <p>
+                            Role-based authentication helps
+                            protect patient, doctor and
+                            administrator information.
+                        </p>
+
+                        <a href="/Account/Login"
+                           class="btn btn-primary service-btn">
+                            Login
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <p class="mb-0">
+            © 2026 Healthcare Management System
+        </p>
+
+    </footer>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+
+</html>

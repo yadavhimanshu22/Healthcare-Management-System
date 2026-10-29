@@ -1,0 +1,1582 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = null;
+
+    var adminName = User.Identity?.Name ?? "Himanshu Yadav";
+    var firstLetter = string.IsNullOrWhiteSpace(adminName)
+        ? "A"
+        : adminName.Substring(0, 1).ToUpper();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Admin Dashboard - HealthCare</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            background: #02070d;
+            color: #ffffff;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .admin-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 270px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #061a2d 0%,
+                    #03111f 55%,
+                    #020a12 100%
+                );
+
+            border-right: 1px solid rgba(255,255,255,.08);
+
+            padding: 25px 16px;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            padding: 0 10px 25px;
+
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                135deg,
+                #1683ff,
+                #0759bd
+            );
+
+            font-size: 22px;
+            color: white;
+
+            box-shadow: 0 8px 25px rgba(0,120,255,.25);
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand-subtitle {
+            display: block;
+            color: #66839f;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-top: 3px;
+        }
+
+        .menu-title {
+            margin: 27px 10px 12px;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            color: #5e7d99;
+            letter-spacing: 1.2px;
+        }
+
+        .side-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            height: 48px;
+
+            margin: 5px 0;
+
+            padding: 0 15px;
+
+            border-radius: 11px;
+
+            color: #9db5ca;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: .25s;
+        }
+
+        .side-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .side-link:hover {
+            background: rgba(21,126,245,.12);
+            color: #ffffff;
+        }
+
+        .side-link.active {
+            background: linear-gradient(
+                135deg,
+                #087cff,
+                #0561cc
+            );
+
+            color: white;
+
+            box-shadow:
+                0 8px 25px rgba(0,112,255,.25);
+        }
+
+        /* ================= MAIN ================= */
+
+        .admin-main {
+            margin-left: 270px;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 80% 0%,
+                    rgba(0,108,255,.12),
+                    transparent 32%
+                ),
+                #02070d;
+        }
+
+        /* ================= HEADER ================= */
+
+        .top-header {
+            height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+            border-bottom: 1px solid rgba(255,255,255,.07);
+
+            background: rgba(3,10,17,.95);
+        }
+
+        .header-left h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .header-left span {
+            color: #67839c;
+            font-size: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            width: 240px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            background: #09131f;
+            border: 1px solid rgba(255,255,255,.08);
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 14px;
+
+            color: #64819c;
+        }
+
+        .search-box input {
+            width: 100%;
+
+            background: transparent;
+            border: 0;
+            outline: none;
+
+            color: white;
+
+            padding-left: 9px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 9px 14px;
+
+            border-radius: 20px;
+
+            background: rgba(0,180,100,.06);
+            border: 1px solid rgba(0,190,110,.20);
+
+            color: #39d98a;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+            background: #2ad17f;
+
+            box-shadow: 0 0 10px #2ad17f;
+        }
+
+        /* ================= ADMIN PROFILE BUTTON ================= */
+
+        .admin-user {
+            position: relative;
+        }
+
+        .admin-profile-link {
+            border: 0;
+            background: transparent;
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 4px 7px;
+
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #1687ff,
+                #0754ae
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 800;
+        }
+
+        .admin-info strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .admin-info small {
+            display: block;
+            color: #6c879e;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .profile-arrow {
+            color: #6d879d;
+            margin-left: 4px;
+        }
+
+        /* dropdown */
+
+        .profile-menu {
+            position: absolute;
+
+            right: 0;
+            top: 53px;
+
+            width: 220px;
+
+            background: #08121e;
+
+            border: 1px solid rgba(255,255,255,.09);
+
+            border-radius: 13px;
+
+            padding: 8px;
+
+            box-shadow: 0 20px 50px rgba(0,0,0,.55);
+
+            display: none;
+
+            z-index: 2000;
+        }
+
+        .profile-menu.show {
+            display: block;
+        }
+
+        .profile-menu-header {
+            padding: 12px;
+
+            border-bottom: 1px solid rgba(255,255,255,.07);
+
+            margin-bottom: 5px;
+        }
+
+        .profile-menu-header strong {
+            font-size: 14px;
+        }
+
+        .profile-menu-header span {
+            display: block;
+
+            color: #66829a;
+
+            font-size: 11px;
+
+            margin-top: 3px;
+        }
+
+        .profile-menu a,
+        .logout-btn {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 11px 12px;
+
+            border-radius: 8px;
+
+            color: #a9bdd0;
+
+            background: transparent;
+
+            border: 0;
+
+            font-size: 13px;
+
+            text-align: left;
+        }
+
+        .profile-menu a:hover {
+            background: #0d2135;
+            color: white;
+        }
+
+        .logout-btn {
+            color: #ff7777;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,70,70,.08);
+        }
+
+        /* ================= CONTENT ================= */
+
+        .dashboard-content {
+            padding: 28px 30px 50px;
+        }
+
+        .back-button {
+            display: inline-flex;
+
+            align-items: center;
+            gap: 8px;
+
+            background: #087cff;
+            color: white;
+
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            box-shadow: 0 8px 22px rgba(0,100,255,.2);
+
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background: #0068dd;
+            color: white;
+        }
+
+        /* ================= HERO ================= */
+
+        .dashboard-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 28px 30px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #081522,
+                    #06111c
+                );
+
+            border: 1px solid rgba(255,255,255,.08);
+
+            margin-bottom: 22px;
+        }
+
+        .dashboard-hero h1 {
+            margin: 0;
+
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .dashboard-hero p {
+            margin: 8px 0 0;
+
+            color: #66839d;
+            font-size: 13px;
+        }
+
+        .period-select {
+            height: 42px;
+
+            min-width: 175px;
+
+            padding: 0 13px;
+
+            border-radius: 10px;
+
+            background: #091725;
+
+            color: white;
+
+            border: 1px solid rgba(255,255,255,.10);
+
+            outline: none;
+        }
+
+        .period-select:focus {
+            border-color: #087cff;
+        }
+
+        /* ================= CARDS ================= */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            padding: 22px;
+
+            min-height: 150px;
+
+            border-radius: 16px;
+
+            background: #08131f;
+
+            border: 1px solid rgba(255,255,255,.07);
+
+            transition: .25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+
+            border-color: rgba(0,126,255,.28);
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,.25);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-title {
+            color: #6d8aa4;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+
+            margin-top: 12px;
+        }
+
+        .stat-description {
+            color: #526f88;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(0,116,255,.10);
+
+            color: #1687ff;
+
+            font-size: 17px;
+        }
+
+        /* ================= SMALL STATS ================= */
+
+        .small-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 22px;
+        }
+
+        .small-card {
+            background: #08131f;
+
+            border: 1px solid rgba(255,255,255,.07);
+
+            border-radius: 14px;
+
+            padding: 17px 19px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+        }
+
+        .small-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 11px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #0b2137;
+
+            color: #1687ff;
+        }
+
+        .small-card span {
+            display: block;
+
+            color: #67849d;
+            font-size: 11px;
+        }
+
+        .small-card strong {
+            display: block;
+
+            font-size: 20px;
+
+            margin-top: 2px;
+        }
+
+        /* ================= BOTTOM ================= */
+
+        .bottom-grid {
+            display: grid;
+
+            grid-template-columns:
+                2fr 1fr;
+
+            gap: 18px;
+        }
+
+        .panel {
+            background: #08131f;
+
+            border: 1px solid rgba(255,255,255,.07);
+
+            border-radius: 16px;
+
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 20px 22px;
+
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+
+        .panel-header h3 {
+            margin: 0;
+
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .panel-header span {
+            display: block;
+
+            color: #58758d;
+
+            font-size: 11px;
+
+            margin-top: 4px;
+        }
+
+        .view-all {
+            color: #1687ff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            min-height: 230px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-direction: column;
+
+            color: #58748c;
+        }
+
+        .empty-icon {
+            width: 52px;
+            height: 52px;
+
+            border-radius: 14px;
+
+            background: #0a2035;
+
+            color: #1687ff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+
+            margin-bottom: 12px;
+        }
+
+        .empty-state strong {
+            color: #8ba4b9;
+            font-size: 13px;
+        }
+
+        .empty-state span {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* appointment status */
+
+        .status-list {
+            padding: 5px 20px 15px;
+        }
+
+        .status-row {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 17px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,.06);
+
+            color: #7891a6;
+
+            font-size: 12px;
+        }
+
+        .status-row:last-child {
+            border-bottom: 0;
+        }
+
+        .status-name {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .status-dot-blue,
+        .status-dot-orange,
+        .status-dot-green,
+        .status-dot-red {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot-blue {
+            background: #1687ff;
+        }
+
+        .status-dot-orange {
+            background: #f6a900;
+        }
+
+        .status-dot-green {
+            background: #28c987;
+        }
+
+        .status-dot-red {
+            background: #ef5570;
+        }
+
+        .status-row strong {
+            color: white;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @@media(max-width:1100px) {
+
+            .stats-grid,
+            .small-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                display: none;
+            }
+        }
+
+        @@media(max-width:800px) {
+
+            .admin-sidebar {
+                width: 75px;
+                padding: 20px 10px;
+            }
+
+            .brand-title,
+            .brand-subtitle,
+            .menu-title,
+            .side-link span {
+                display: none;
+            }
+
+            .brand {
+                justify-content: center;
+            }
+
+            .side-link {
+                justify-content: center;
+            }
+
+            .admin-main {
+                margin-left: 75px;
+            }
+
+            .admin-info,
+            .profile-arrow,
+            .system-status {
+                display: none;
+            }
+
+            .dashboard-hero {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .stats-grid,
+            .small-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="admin-sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+
+            <div>
+                <div class="brand-title">HealthCare</div>
+                <span class="brand-subtitle">ADMIN PANEL</span>
+            </div>
+
+        </div>
+
+
+        <div class="menu-title">
+            MANAGEMENT
+        </div>
+
+
+        <a href="/Admin/Dashboard"
+           class="side-link active">
+
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <a href="/Admin/Users"
+           class="side-link">
+
+            <i class="fa-solid fa-users"></i>
+            <span>Users</span>
+
+        </a>
+
+
+        <a href="/Admin/Patients"
+           class="side-link">
+
+            <i class="fa-solid fa-user-injured"></i>
+            <span>Patients</span>
+
+        </a>
+
+
+        <a href="/Admin/Doctors"
+           class="side-link">
+
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+
+        </a>
+
+
+        <a href="/Admin/Appointments"
+           class="side-link">
+
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Appointments</span>
+
+        </a>
+
+
+        <a href="/Admin/MedicalRecords"
+           class="side-link">
+
+            <i class="fa-solid fa-file-medical"></i>
+            <span>Medical Records</span>
+
+        </a>
+
+
+        <a href="/Admin/Billing"
+           class="side-link">
+
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Billing</span>
+
+        </a>
+
+
+        <a href="/Admin/Reports"
+           class="side-link">
+
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Reports</span>
+
+        </a>
+
+
+        <a href="/Admin/Roles"
+           class="side-link">
+
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Roles & Permissions</span>
+
+        </a>
+
+
+        <a href="/Admin/Settings"
+           class="side-link">
+
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+
+        </a>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="admin-main">
+
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <div class="header-left">
+
+                <h4>Admin Dashboard</h4>
+
+                <span>
+                    HealthCare Management System
+                </span>
+
+            </div>
+
+
+            <div class="header-right">
+
+
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text"
+                           placeholder="Search..." />
+
+                </div>
+
+
+                <div class="system-status">
+
+                    <span class="status-dot"></span>
+
+                    System Online
+
+                </div>
+
+
+                <!-- ADMIN -->
+
+                <div class="admin-user">
+
+                    <button type="button"
+                            class="admin-profile-link"
+                            onclick="toggleProfileMenu()">
+
+                        <div class="admin-avatar">
+                            @firstLetter
+                        </div>
+
+                        <div class="admin-info">
+
+                            <strong>
+                                @adminName
+                            </strong>
+
+                            <small>
+                                Administrator
+                            </small>
+
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down profile-arrow"></i>
+
+                    </button>
+
+
+                    <div class="profile-menu"
+                         id="profileMenu">
+
+                        <div class="profile-menu-header">
+
+                            <strong>
+                                @adminName
+                            </strong>
+
+                            <span>
+                                Hospital Administrator
+                            </span>
+
+                        </div>
+
+
+                        <a href="/Account/Profile">
+
+                            <i class="fa-regular fa-user"></i>
+
+                            My Profile
+
+                        </a>
+
+
+                        <a href="/Account/Profile">
+
+                            <i class="fa-solid fa-pen"></i>
+
+                            Edit Profile
+
+                        </a>
+
+
+                        <form asp-controller="Account"
+                              asp-action="Logout"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="logout-btn">
+
+                                <i class="fa-solid fa-right-from-bracket"></i>
+
+                                Logout
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <section class="dashboard-content">
+
+
+            <a href="javascript:history.back()"
+               class="back-button">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Go Back
+
+            </a>
+
+
+            <!-- HERO -->
+
+            <div class="dashboard-hero">
+
+                <div>
+
+                    <h1>
+                        Admin Dashboard
+                    </h1>
+
+                    <p>
+                        Monitor and manage your healthcare system from one place.
+                    </p>
+
+                </div>
+
+
+                <!-- ONLY DROPDOWN, NO "TIME PERIOD" TEXT -->
+
+                <select class="period-select"
+                        id="dashboardPeriod">
+
+                    <option value="all">
+                        All Time
+                    </option>
+
+                    <option value="today">
+                        Today
+                    </option>
+
+                    <option value="week">
+                        This Week
+                    </option>
+
+                    <option value="month">
+                        This Month
+                    </option>
+
+                    <option value="year">
+                        This Year
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- MAIN STATS -->
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div>
+
+                            <div class="stat-title">
+                                Total Patients
+                            </div>
+
+                            <div class="stat-value">
+                                0
+                            </div>
+
+                            <div class="stat-description">
+                                Registered patients
+                            </div>
+
+                        </div>
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div>
+
+                            <div class="stat-title">
+                                Total Doctors
+                            </div>
+
+                            <div class="stat-value">
+                                0
+                            </div>
+
+                            <div class="stat-description">
+                                Registered doctors
+                            </div>
+
+                        </div>
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div>
+
+                            <div class="stat-title">
+                                Total Users
+                            </div>
+
+                            <div class="stat-value">
+                                0
+                            </div>
+
+                            <div class="stat-description">
+                                System accounts
+                            </div>
+
+                        </div>
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div>
+
+                            <div class="stat-title">
+                                Total Revenue
+                            </div>
+
+                            <div class="stat-value">
+                                ₹0.00
+                            </div>
+
+                            <div class="stat-description">
+                                Recorded billing
+                            </div>
+
+                        </div>
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SMALL STATS -->
+
+            <div class="small-grid">
+
+
+                <div class="small-card">
+
+                    <div class="small-icon">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Today's Appointments
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="small-card">
+
+                    <div class="small-icon">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Pending
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="small-card">
+
+                    <div class="small-icon">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Completed
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="small-card">
+
+                    <div class="small-icon">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Cancelled
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTTOM -->
+
+            <div class="bottom-grid">
+
+
+                <!-- RECENT APPOINTMENTS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Recent Appointments
+                            </h3>
+
+                            <span>
+                                Latest hospital appointments
+                            </span>
+
+                        </div>
+
+                        <a href="/Admin/Appointments"
+                           class="view-all">
+
+                            View All →
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+
+                            <i class="fa-solid fa-calendar-days"></i>
+
+                        </div>
+
+                        <strong>
+                            No appointments found
+                        </strong>
+
+                        <span>
+                            Recent appointments will appear here.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Appointment Status
+                            </h3>
+
+                            <span>
+                                Current appointment summary
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="status-list">
+
+
+                        <div class="status-row">
+
+                            <div class="status-name">
+
+                                <span class="status-dot-blue"></span>
+
+                                Active Appointments
+
+                            </div>
+
+                            <strong>0</strong>
+
+                        </div>
+
+
+                        <div class="status-row">
+
+                            <div class="status-name">
+
+                                <span class="status-dot-orange"></span>
+
+                                Pending
+
+                            </div>
+
+                            <strong>0</strong>
+
+                        </div>
+
+
+                        <div class="status-row">
+
+                            <div class="status-name">
+
+                                <span class="status-dot-green"></span>
+
+                                Completed
+
+                            </div>
+
+                            <strong>0</strong>
+
+                        </div>
+
+
+                        <div class="status-row">
+
+                            <div class="status-name">
+
+                                <span class="status-dot-red"></span>
+
+                                Cancelled
+
+                            </div>
+
+                            <strong>0</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        function toggleProfileMenu() {
+
+            const menu =
+                document.getElementById("profileMenu");
+
+            menu.classList.toggle("show");
+
+        }
+
+
+        document.addEventListener("click", function (event) {
+
+            const user =
+                document.querySelector(".admin-user");
+
+            const menu =
+                document.getElementById("profileMenu");
+
+            if (!user.contains(event.target)) {
+
+                menu.classList.remove("show");
+
+            }
+
+        });
+
+
+        document
+            .getElementById("dashboardPeriod")
+            .addEventListener("change", function () {
+
+                const selected =
+                    this.value;
+
+                console.log(
+                    "Selected dashboard period:",
+                    selected
+                );
+
+            });
+
+    </script>
+
+</body>
+</html>
